@@ -309,7 +309,7 @@ footer p{margin:4px 0;max-width:90ch}
 <main id="top">
   <section class="intro wrap">
     <h1>Drag the data. Watch the statistics move.</h1>
-    <p class="lede">A hands-on lab for descriptive statistics. Move points and see the mean and median respond, run any data set through the calculator, look up z, t and χ² values, and learn each idea through animations, videos and short concept notes.</p>
+    <p class="lede">A hands-on lab for descriptive statistics. Move points and see the mean and median respond, run any data set through the calculator, look up z, t, χ² and F values, and learn each idea through animations, videos and short concept notes.</p>
     <p class="bn">ডট টেনে সরান, আর নিজের চোখে দেখুন গড়, মধ্যক আর প্রচুরক কীভাবে বদলায়।</p>
     <div class="legend" aria-label="Colour key used across the site">
       <span><i style="background:var(--mean)"></i>Mean</span>
@@ -479,15 +479,16 @@ footer p{margin:4px 0;max-width:90ch}
     <div class="section-head">
       <div>
         <h2 id="tb-h">Statistical tables</h2>
-        <p>Standard normal (z), Student's t and chi-square tables, calculated in your browser. Hover any cell to trace its row and column, or look a value up directly.</p>
+        <p>Standard normal (z), Student's t, chi-square and F tables, calculated in your browser. Hover any cell to trace its row and column, or look a value up directly.</p>
       </div>
-      <p class="bn">z, t ও কাই-বর্গ (χ²) টেবিল, সরাসরি মান খুঁজে নেওয়ার সুবিধাসহ।</p>
+      <p class="bn">z, t, কাই-বর্গ (χ²) ও F টেবিল, সরাসরি মান খুঁজে নেওয়ার সুবিধাসহ।</p>
     </div>
     <div class="bench">
       <div class="tabbar" role="tablist" aria-label="Choose a table">
         <button class="btn" role="tab" id="tab-z" aria-selected="true" aria-controls="panel-z" data-tab="z">z table</button>
         <button class="btn" role="tab" id="tab-t" aria-selected="false" aria-controls="panel-t" data-tab="t">t table</button>
         <button class="btn" role="tab" id="tab-c" aria-selected="false" aria-controls="panel-c" data-tab="c">χ² table</button>
+        <button class="btn" role="tab" id="tab-f" aria-selected="false" aria-controls="panel-f" data-tab="f">F table</button>
       </div>
 
       <div role="tabpanel" id="panel-z" aria-labelledby="tab-z">
@@ -546,6 +547,25 @@ footer p{margin:4px 0;max-width:90ch}
         </div>
         <p class="lookup-out" id="cOut" aria-live="polite"></p>
         <div class="ttable-wrap" id="cWrap"><table class="st" id="cTable"></table></div>
+      </div>
+
+      <div role="tabpanel" id="panel-f" aria-labelledby="tab-f" hidden>
+        <div class="table-head">
+          <div>
+            <h3>F table: critical values</h3>
+            <p class="sub" style="margin-top:4px">Columns are the numerator degrees of freedom (df₁), rows the denominator (df₂). Each value has area α to its right. In one-way ANOVA, df₁ = groups − 1 and df₂ = total observations − groups; reject H₀ if your F is larger than the table value.</p>
+          </div>
+          <svg id="fMini" viewBox="0 0 230 92" role="img" aria-label="Shaded right-tail area alpha under an F curve"></svg>
+        </div>
+        <div class="lookup">
+          <label class="field" for="fD1">df₁ (numerator)<input type="number" id="fD1" min="1" max="10000" step="1" value="3"></label>
+          <label class="field" for="fD2">df₂ (denominator)<input type="number" id="fD2" min="1" max="10000" step="1" value="20"></label>
+          <label class="field" for="fAlpha">Area α to the right
+            <select id="fAlpha"><option value="0.1">0.10</option><option value="0.05" selected>0.05</option><option value="0.025">0.025</option><option value="0.01">0.01</option></select>
+          </label>
+        </div>
+        <p class="lookup-out" id="fOut" aria-live="polite"></p>
+        <div class="ttable-wrap" id="fWrap"><table class="st" id="fTable"></table></div>
       </div>
     </div>
   </section>
@@ -784,6 +804,27 @@ const D = {
     while (D.chi2CDF(hi, k) < p) hi *= 2;
     for (let i = 0; i < 120; i++) { const mid = (lo + hi) / 2; if (D.chi2CDF(mid, k) < p) lo = mid; else hi = mid; }
     return (lo + hi) / 2;
+  },
+  fCDF(x, d1, d2) {
+    if (x <= 0) return 0;
+    if (!isFinite(d1) && !isFinite(d2)) return x >= 1 ? 1 : 0;
+    if (!isFinite(d2)) return D.chi2CDF(x * d1, d1);
+    if (!isFinite(d1)) return 1 - D.chi2CDF(d2 / x, d2);
+    return D.ibeta(d1 * x / (d1 * x + d2), d1 / 2, d2 / 2);
+  },
+  fInv(p, d1, d2) {
+    if (!isFinite(d1) && !isFinite(d2)) return 1;
+    if (!isFinite(d2)) return D.chi2Inv(p, d1) / d1;
+    if (!isFinite(d1)) return d2 / D.chi2Inv(1 - p, d2);
+    let lo = 0, hi = 1;
+    while (D.fCDF(hi, d1, d2) < p && hi < 1e9) hi *= 2;
+    for (let i = 0; i < 100; i++) { const mid = (lo + hi) / 2; if (D.fCDF(mid, d1, d2) < p) lo = mid; else hi = mid; }
+    return (lo + hi) / 2;
+  },
+  fPdf(x, d1, d2) {
+    if (x <= 0) return 0;
+    const lb = D.lgamma(d1 / 2) + D.lgamma(d2 / 2) - D.lgamma((d1 + d2) / 2);
+    return Math.exp(0.5 * (d1 * Math.log(d1 * x) + d2 * Math.log(d2) - (d1 + d2) * Math.log(d1 * x + d2)) - Math.log(x) - lb);
   },
   chi2Pdf(x, k) {
     if (x <= 0) return 0;
@@ -1528,6 +1569,35 @@ function cLookup(scroll = true) {
   if (scroll) markHit($('#cTable'), $('#cWrap'), cell);
   else { $$('#cTable td.hit').forEach(x => x.classList.remove('hit')); if (cell) cell.classList.add('hit'); }
 }
+const F_D1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 24, 30, 40, 60, 120, Infinity];
+const F_D2 = [...Array.from({ length: 30 }, (_, i) => i + 1), 40, 60, 120, Infinity];
+let fBuiltAlpha = null;
+const fFmt = v => v >= 100 ? v.toFixed(1) : v.toFixed(2);
+const dfLab = d => isFinite(d) ? String(d) : '∞';
+function buildF(alpha) {
+  if (fBuiltAlpha === alpha) return;
+  fBuiltAlpha = alpha;
+  let h = `<thead><tr><th class="lab"></th><th class="lab" colspan="${F_D1.length}" style="text-align:center">α = ${alpha} · numerator degrees of freedom (df₁) →</th></tr>`;
+  h += '<tr><th class="lab">df₂ ↓</th>' + F_D1.map(d => `<th>${dfLab(d)}</th>`).join('') + '</tr></thead><tbody>';
+  F_D2.forEach((d2, ri) => {
+    h += `<tr><th>${dfLab(d2)}</th>`;
+    F_D1.forEach((d1, ci) => { h += `<td data-r="${ri}" data-c="${ci}">${fFmt(D.fInv(1 - alpha, d1, d2))}</td>`; });
+    h += '</tr>';
+  });
+  $('#fTable').innerHTML = h + '</tbody>';
+}
+function fLookup(scroll = true) {
+  const d1 = parseInt($('#fD1').value, 10), d2 = parseInt($('#fD2').value, 10), a = +$('#fAlpha').value;
+  const out = $('#fOut');
+  buildF(a);
+  if (!(d1 >= 1) || !(d2 >= 1)) { out.textContent = 'Both degrees of freedom must be whole numbers of 1 or more.'; markHit($('#fTable'), $('#fWrap'), null); return; }
+  const v = D.fInv(1 - a, d1, d2);
+  const ri = F_D2.indexOf(d2), ci = F_D1.indexOf(d1);
+  out.textContent = `F = ${v.toFixed(4)}  for df₁ = ${d1}, df₂ = ${d2}, α = ${a}   ·   reject H₀ if your F > ${v.toFixed(3)}` + (ri < 0 || ci < 0 ? `   ·   this df is not a table row or column, so the value was computed exactly` : '');
+  const cell = ri >= 0 && ci >= 0 ? $(`#fTable td[data-r="${ri}"][data-c="${ci}"]`) : null;
+  if (scroll) markHit($('#fTable'), $('#fWrap'), cell);
+  else { $$('#fTable td.hit').forEach(x => x.classList.remove('hit')); if (cell) cell.classList.add('hit'); }
+}
 function miniCurve(svg, pdf, x0, x1, s0, s1, label) {
   svg.replaceChildren();
   const W = 230, base = 70, top = 8;
@@ -1548,6 +1618,7 @@ function buildMinis() {
   miniCurve($('#zMini'), v => D.phi(v), -3.5, 3.5, -3.5, 1, [[0, '0'], [1, 'z'], [-2.4, 'area']]);
   miniCurve($('#tMini'), v => D.tPdf(v, 4), -4.5, 4.5, 2.13, 4.5, [[0, '0'], [2.13, 't'], [3.5, 'α']]);
   miniCurve($('#cMini'), v => D.chi2Pdf(v, 5), 0.01, 18, 11.07, 18, [[0.4, '0'], [11.07, 'χ²'], [15, 'α']]);
+  miniCurve($('#fMini'), v => D.fPdf(v, 5, 10), 0.02, 4.2, 2.52, 4.2, [[0.15, '0'], [2.52, 'F'], [3.3, 'α']]);
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => {
   $$('[data-tab]').forEach(x => { const on = x === b; x.setAttribute('aria-selected', String(on)); $('#panel-' + x.dataset.tab).hidden = !on; });
@@ -1556,6 +1627,7 @@ $$('[data-zsign]').forEach(b => b.addEventListener('click', () => { zSign = b.da
 $('#zIn').addEventListener('input', () => zLookup(true));
 ['#tDf', '#tAlpha', '#tTails'].forEach(id => $(id).addEventListener(id === '#tDf' ? 'input' : 'change', () => tLookup(true)));
 ['#cDf', '#cAlpha'].forEach(id => $(id).addEventListener(id === '#cDf' ? 'input' : 'change', () => cLookup(true)));
+['#fD1', '#fD2', '#fAlpha'].forEach(id => $(id).addEventListener(id === '#fAlpha' ? 'change' : 'input', () => fLookup(true)));
 
 /* ================= Lessons ================= */
 const seg = (t, a, b) => clamp((t - a) / (b - a), 0, 1);
@@ -1901,8 +1973,8 @@ pgLoad(PRESETS.default, 'default');
 calcRun();
 neUpdate();
 buildZ(); buildT(); buildC(); buildMinis();
-zLookup(false); tLookup(false); cLookup(false);
-cellHover($('#zTable')); cellHover($('#tTable')); cellHover($('#cTable'));
+zLookup(false); tLookup(false); cLookup(false); fLookup(false);
+cellHover($('#zTable')); cellHover($('#tTable')); cellHover($('#cTable')); cellHover($('#fTable'));
 lpSelect(0, false);
 
 let rT;
