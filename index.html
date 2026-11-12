@@ -14,6 +14,10 @@
   --glow-1:rgba(255,138,76,.38); --glow-2:rgba(32,190,170,.34); --glow-3:rgba(120,90,255,.28);
   --accent:#2c56e0; --accent-soft:rgba(44,86,224,.12); --on-accent:#ffffff;
   --mean:#c4460b; --median:#0a7a6e; --mode:#6a3dcf; --band:rgba(44,86,224,.12);
+  --box:#0f766e; /* box plot outline and whiskers: deep paste/teal, matching the fill */
+  --box-fill:#bdeee6; /* inside of the box: paste colour */
+  --box-med:#1d4ed8; /* median line inside the box: blue */
+  --out:#d32f2f; /* outliers: red */
   --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
   --font-body:"IBM Plex Sans","Hind Siliguri",system-ui,-apple-system,"Segoe UI",sans-serif;
   --font-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
@@ -27,6 +31,7 @@
     --glow-1:rgba(255,145,82,.22); --glow-2:rgba(56,201,182,.20); --glow-3:rgba(126,120,255,.28);
   --accent:#7e9dff; --accent-soft:rgba(126,157,255,.16); --on-accent:#0b1020;
   --mean:#ff9152; --median:#38c9b6; --mode:#b49aff; --band:rgba(126,157,255,.14);
+  --box:#5fd4c4; --box-fill:#25635d; --box-med:#93b4ff; --out:#ff6b6b;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -195,13 +200,17 @@ svg text{font-family:var(--font-mono);font-size:12.5px}
 .band{fill:var(--band)}
 .band-label{fill:var(--accent);font-size:12px;font-weight:600}
 .dev{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:3 3}
-.bx-box{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
-.bx-w{stroke:var(--accent);stroke-width:1.5}
-.bx-med{stroke:var(--median);stroke-width:3}
-.bx-out{fill:var(--surface);stroke:var(--mean);stroke-width:2}
+.bx-box{fill:var(--box-fill);stroke:var(--box);stroke-width:1.5}
+.bx-w{stroke:var(--box);stroke-width:1.5}
+.bx-med{stroke:var(--box-med);stroke-width:3}
+.bx-out{fill:var(--surface);stroke:var(--out);stroke-width:2}
 .bx-big .bx-w{stroke-width:2.2}
 .bx-big .bx-box{stroke-width:2.2}
 .bx-big .bx-med{stroke-width:4}
+.bx-big .bx-out{stroke-width:2.6;fill:color-mix(in srgb,var(--out) 24%,var(--surface))}
+.fcurve{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}
+.fpt{fill:var(--ink)}
+.t-out{fill:var(--out);font-weight:700;font-size:12.5px}
 .bar{fill:var(--accent);opacity:.78}
 .bar-label{fill:var(--muted);font-size:11.5px}
 .curve{fill:none;stroke:var(--ink);stroke-width:2.5}
@@ -263,6 +272,16 @@ details.steps .inner{padding:0 14px 14px}
 .split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
 @media (max-width:700px){.split{grid-template-columns:1fr}}
 .panel-title{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 8px;letter-spacing:.01em}
+/* key above the calculator histogram */
+.chart-key{margin:0 0 6px;font-size:12.5px;gap:4px 16px}
+.chart-key i.k-bar{width:12px;height:10px;border-radius:2px;background:var(--accent);opacity:.78}
+.chart-key i.k-curve{width:16px;height:3px;background:var(--ink)}
+.chart-key svg{display:block;flex:none}
+/* frequency table: click to show, click again to hide */
+.split details.steps{margin-top:0}
+details.steps .when-open{display:none}
+details.steps[open] .when-open{display:inline}
+details.steps[open] .when-closed{display:none}
 
 /* normal */
 .ne-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(250px,1fr);gap:18px;align-items:start}
@@ -497,8 +516,13 @@ footer p{margin:4px 0;max-width:90ch}
           </div>
           <p class="status" id="calcStatus" aria-live="polite"></p>
           <div>
-            <p class="panel-title">Histogram with box plot</p>
-            <div class="plot" id="calcChart"><svg id="calcSvg" role="img" aria-label="Histogram of your data with mean and median lines and a box plot"></svg></div>
+            <p class="panel-title">Histogram with frequency curve and box plot</p>
+            <div class="legend chart-key" aria-hidden="true">
+              <span><i class="k-bar"></i>Frequency (bars)</span>
+              <span><i class="k-curve"></i>Frequency curve</span>
+              <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle class="bx-out" cx="6" cy="6" r="4" style="stroke-width:2.2;fill:color-mix(in srgb,var(--out) 24%,var(--surface))"/></svg>Outlier (value shown)</span>
+            </div>
+            <div class="plot" id="calcChart"><svg id="calcSvg" role="img" aria-label="Histogram of your data with a frequency curve, mean and median lines, and a box plot with outliers labelled"></svg></div>
           </div>
         </div>
         <div>
@@ -522,8 +546,10 @@ footer p{margin:4px 0;max-width:90ch}
       </div>
       <div class="split">
         <div>
-          <p class="panel-title">Frequency table</p>
-          <div class="scroll-x"><table class="mini-table" id="freqTable"></table></div>
+          <details class="steps" id="freqBox">
+            <summary><span class="when-closed">Show frequency table</span><span class="when-open">Hide frequency table</span></summary>
+            <div class="inner"><div class="scroll-x"><table class="mini-table" id="freqTable"></table></div></div>
+          </details>
         </div>
         <div>
           <p class="panel-title">Sorted data</p>
@@ -1000,7 +1026,7 @@ function drawBox(parent, st, x, y0, h) {
   el('line', { x1: x(st.hi), x2: x(st.hi), y1: y0 + 4, y2: y0 + h - 4, class: 'bx-w' }, parent);
   el('rect', { x: x(st.q1), y: y0, width: Math.max(1.5, x(st.q3) - x(st.q1)), height: h, rx: 3, class: 'bx-box' }, parent);
   el('line', { x1: x(st.median), x2: x(st.median), y1: y0, y2: y0 + h, class: 'bx-med' }, parent);
-  st.outliers.forEach(o => el('circle', { cx: x(o), cy: ym, r: h >= 30 ? 6 : 4, class: 'bx-out' }, parent));
+  st.outliers.forEach(o => el('circle', { cx: x(o), cy: ym, r: h >= 40 ? 5.5 : h >= 30 ? 5 : 4, class: 'bx-out' }, parent));
 }
 function shapeOf(st) {
   if (st.n < 3 || !(st.sd > 0)) return { cls: 'sym', label: 'Too few points', sk: NaN };
@@ -1319,10 +1345,9 @@ const STATS = [
   { k: 'kurt', label: () => 'Excess kurtosis', val: d => fmt(d.kurt, 4), copy: d => fmt(d.kurt, 6), cls: '', g: '' },
   { k: 'out', label: () => 'Outliers (1.5 IQR)', val: d => d.outliers.length ? d.outliers.slice(0, 6).map(v => fmt(v, 4)).join(', ') + (d.outliers.length > 6 ? '…' : '') : 'none', copy: d => d.outliers.length ? d.outliers.join(', ') : 'none', cls: '', g: '' }
 ];
-// results fill row by row (left, right). Colour order: first black, then 2 blue, 2 black, 2 blue …
-// which in two columns makes a criss-cross (checkerboard) pattern.
-const ROW_BLUE = ['#1d4ed8', '#7b9cf0'], ROW_BLACK = ['#131b2e', '#e6ebf4'];
-const isBlue = i => i > 0 && Math.floor((i - 1) / 2) % 2 === 0;
+// results fill row by row (left, right). Colours repeat in threes: black, blue, orange, black, blue, orange …
+// each pair is [light-mode colour, dark-mode colour]
+const ROW_COLORS = [['#131b2e', '#e6ebf4'], ['#1d4ed8', '#7b9cf0'], ['#c4460b', '#ff9152']];
 const DEFAULT_STATS = ['mean', 'sd', 'cv', 'skew', 'kurt'];
 let statSel = new Set(DEFAULT_STATS);
 try { const saved = JSON.parse(localStorage.getItem('abcstatlab-calc-stats-v2') || 'null'); if (Array.isArray(saved)) statSel = new Set(saved.filter(k => STATS.some(x => x.k === k))); } catch (_) {}
@@ -1343,7 +1368,7 @@ function renderCalcTiles() {
   box.classList.toggle('two', two);
   box.innerHTML = !n ? '<p class="sub" style="padding:12px 14px;margin:0">No results selected. Open "Choose which results to show" and tick the ones you need.</p>'
     : chosen.map((x, i) => {
-        const r = two ? Math.floor(i / 2) : i, c = two ? i % 2 : 0, col = isBlue(i) ? ROW_BLUE : ROW_BLACK;
+        const r = two ? Math.floor(i / 2) : i, c = two ? i % 2 : 0, col = ROW_COLORS[i % 3];
         const cls = 'res-row' + (c ? ' c2' : '') + (r % 2 ? ' alt' : '') + (r === lastRow ? ' last' : '');
         return `<div class="${cls}" style="--cl:${col[0]};--cd:${col[1]}"><span class="k"><i></i>${x.label(sym)}</span><span class="v">${x.val(d)}</span></div>`;
       }).join('');
@@ -1396,15 +1421,38 @@ function calcRun() {
     `${calcSample ? '<i>s</i>²' : 'σ²'} = Σ(<i>x</i> − ${m})² ÷ ${calcSample ? '(<i>n</i> − 1)' : '<i>N</i>'} = ${fmt(ss, 4)} ÷ ${denom} = <b>${fmt(d.variance, 4)}</b><br>` +
     `${calcSample ? '<i>s</i>' : 'σ'} = √${fmt(d.variance, 4)} = <b>${fmt(d.sdUsed, 4)}</b>`;
 }
+// smooth line through points that never overshoots (monotone cubic, Fritsch–Carlson), so a frequency curve never dips below zero
+function smoothPath(P) {
+  const n = P.length;
+  if (n < 2) return '';
+  const dx = [], m = [], t = [];
+  for (let i = 0; i < n - 1; i++) { dx[i] = P[i + 1][0] - P[i][0]; m[i] = (P[i + 1][1] - P[i][1]) / dx[i]; }
+  t[0] = m[0]; t[n - 1] = m[n - 2];
+  for (let i = 1; i < n - 1; i++) t[i] = m[i - 1] * m[i] <= 0 ? 0 : (m[i - 1] + m[i]) / 2;
+  for (let i = 0; i < n - 1; i++) {
+    if (m[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; }
+    const a = t[i] / m[i], b = t[i + 1] / m[i], s = a * a + b * b;
+    if (s > 9) { const k = 3 / Math.sqrt(s); t[i] = k * a * m[i]; t[i + 1] = k * b * m[i]; }
+  }
+  const f = v => v.toFixed(2);
+  let d = `M${f(P[0][0])} ${f(P[0][1])}`;
+  for (let i = 0; i < n - 1; i++) {
+    const h = dx[i] / 3;
+    d += ` C${f(P[i][0] + h)} ${f(P[i][1] + t[i] * h)} ${f(P[i + 1][0] - h)} ${f(P[i + 1][1] - t[i + 1] * h)} ${f(P[i + 1][0])} ${f(P[i + 1][1])}`;
+  }
+  return d;
+}
 function calcChart(d) {
   const svg = $('#calcSvg'), wrap = $('#calcChart');
   svg.replaceChildren();
   const W = Math.max(280, Math.round(wrap.clientWidth)), H = 318;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H);
-  const { bins } = makeBins(d.s);
+  const { w, bins } = makeBins(d.s);
   const lo = bins[0].lo, hi = bins[bins.length - 1].hi;
+  // half a class width of room on each side, so the frequency curve can come down to zero
+  const xlo = lo - w / 2, xhi = hi + w / 2;
   const padL = 36, padR = 14, top = 44, base = 196;
-  const x = v => padL + (v - lo) / (hi - lo) * (W - padL - padR);
+  const x = v => padL + (v - xlo) / (xhi - xlo) * (W - padL - padR);
   const maxC = Math.max(...bins.map(b => b.c));
   const yStep = Math.max(1, Math.ceil(niceStep(maxC / 4)));
   const yMax = Math.ceil(maxC / yStep) * yStep;
@@ -1417,6 +1465,10 @@ function calcChart(d) {
     const bx = x(b.lo) + 1, bw = Math.max(1, x(b.hi) - x(b.lo) - 2);
     if (b.c) el('rect', { x: bx, y: y(b.c), width: bw, height: base - y(b.c), rx: 2, class: 'bar' }, svg);
   });
+  // frequency curve: a smooth line through the top-middle of every bar, starting and ending at zero
+  const fpts = [[x(lo - w / 2), base], ...bins.map(b => [x((b.lo + b.hi) / 2), y(b.c)]), [x(hi + w / 2), base]];
+  el('path', { d: smoothPath(fpts), class: 'fcurve' }, svg);
+  fpts.slice(1, -1).forEach(([cx, cy]) => el('circle', { cx: cx.toFixed(2), cy: cy.toFixed(2), r: 3, class: 'fpt' }, svg));
   el('line', { x1: padL, x2: W - padR, y1: base, y2: base, class: 'ax-line' }, svg);
   const every = Math.ceil((bins.length + 1) / Math.max(2, Math.floor((W - padL - padR) / 52)));
   for (let i = 0; i <= bins.length; i++) {
@@ -1432,11 +1484,37 @@ function calcChart(d) {
   svgText(svg, x(d.median), 29, `median ${fmt(d.median, 2)}`, 't-median halo', anchorFor(x(d.median)));
   if (d.n >= 2) {
     const g = el('g', { class: 'bx-big' }, svg);
-    drawBox(g, d, x, 226, 46);
-    // five-number summary labels under the box
-    const lab = [[d.lo, 'min'], [d.q1, 'Q1'], [d.median, 'median'], [d.q3, 'Q3'], [d.hi, 'max']];
-    let lastX = -Infinity;
-    lab.forEach(([v, t]) => { const px = x(v); if (px - lastX < 32) return; lastX = px; svgText(g, px, 290, t, 't-muted').setAttribute('style', 'font-size:11px'); svgText(g, px, 304, fmt(v, 2), 'bar-label'); });
+    const by = 226, bh = 46, bm = by + bh / 2;
+    drawBox(g, d, x, by, bh);
+    // value of every outlier next to its circle; labels that would touch alternate above and below
+    const outs = new Map();
+    d.outliers.forEach(v => outs.set(v, (outs.get(v) || 0) + 1));
+    let lastUp = -Infinity, lastDown = -Infinity;
+    outs.forEach((c, v) => {
+      const px = x(v), txt = fmt(v, 2) + (c > 1 ? ` (×${c})` : '');
+      const need = txt.length * 7.6 + 6;
+      const anchor = px < padL + 24 ? 'start' : px > W - padR - 24 ? 'end' : 'middle';
+      let yy;
+      if (px - lastUp >= need) { yy = bm - 11; lastUp = px; }
+      else if (px - lastDown >= need) { yy = bm + 20; lastDown = px; }
+      else return;
+      svgText(g, px, yy, txt, 't-out halo', anchor);
+    });
+    // five-number summary labels under the box (with outliers, the whisker stops short of the true min / max)
+    // the two ends are written outward from their whisker so they leave room for Q1 and Q3.
+    // Placed in order of importance (median first); a label that would overlap one already placed is skipped.
+    const lab = [[d.median, 'median', 'middle'], [d.lo, d.lo === d.min ? 'min' : 'whisker', 'end'], [d.hi, d.hi === d.max ? 'max' : 'whisker', 'start'], [d.q1, 'Q1', 'middle'], [d.q3, 'Q3', 'middle']];
+    const placed = [];
+    lab.forEach(([v, t, anchor]) => {
+      const px = x(v), val = fmt(v, 2), wd = Math.max(t.length * 6.7, val.length * 7);
+      if (anchor === 'end' && px - wd < 2) anchor = 'start';
+      if (anchor === 'start' && px + wd > W - 2) anchor = 'end';
+      const left = anchor === 'start' ? px : anchor === 'end' ? px - wd : px - wd / 2;
+      if (placed.some(([l, r]) => left < r + 5 && left + wd > l - 5)) return;
+      placed.push([left, left + wd]);
+      svgText(g, px, 290, t, 't-muted', anchor).setAttribute('style', 'font-size:11px');
+      svgText(g, px, 304, val, 'bar-label', anchor);
+    });
   }
 }
 calcIn.addEventListener('input', () => { clearTimeout(calcIn._t); calcIn._t = setTimeout(calcRun, 120); });
