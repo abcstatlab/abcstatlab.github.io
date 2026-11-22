@@ -206,6 +206,8 @@ svg text{font-family:var(--font-mono);font-size:12.5px}
 .ax-line,.ax-tick{stroke:var(--muted);stroke-width:1.4}
 .ax-label{fill:var(--muted)}
 .gridline{stroke:var(--grid);stroke-width:1}
+.pg-curve{fill:none;stroke:var(--mode);stroke-width:2.2;stroke-linejoin:round;opacity:.85}
+.pg-curve-fill{fill:var(--mode);opacity:.08}
 .dot{fill:var(--accent);stroke:var(--surface);stroke-width:2;cursor:grab;touch-action:none}
 .dot.is-mode{fill:var(--mode)}
 .dot.is-hot{stroke:var(--ink);stroke-width:2.5}
@@ -591,6 +593,7 @@ footer p{margin:4px 0;max-width:90ch}
         <label class="chip c-mode"><input type="checkbox" data-opt="mode" checked><span class="sw"></span><span style="color:var(--ink)">Mode</span></label>
         <label class="chip c-accent"><input type="checkbox" data-opt="band"><span class="sw"></span><span style="color:var(--ink)">Mean ± 1 SD band</span></label>
         <label class="chip"><input type="checkbox" data-opt="dev"><span style="color:var(--ink)">Distances to mean</span></label>
+        <label class="chip"><input type="checkbox" data-opt="curve" checked><span style="color:var(--ink)">Shape curve</span></label>
         <label class="chip"><input type="checkbox" data-opt="box" checked><span style="color:var(--ink)">Box plot</span></label>
         <label class="chip"><input type="checkbox" data-opt="snap" checked><span style="color:var(--ink)">Whole numbers</span></label>
       </div>
@@ -1265,8 +1268,8 @@ function shapeOf(st) {
 const PRESETS = {
   // 16 test scores around 50, with one far-right score at 83
   default: [36, 37, 42, 43, 43, 47, 48, 49, 52, 54, 54, 54, 58, 63, 65, 83],
-  // 16 values, balanced around 50
-  symmetric: [39, 41, 41, 42, 44, 45, 48, 49, 51, 53, 53, 53, 56, 56, 63, 68],
+  // 16 values, a mirror image around 50: mean = median = mode = 50
+  symmetric: [38, 42, 45, 46, 48, 48, 50, 50, 50, 50, 52, 52, 54, 55, 58, 62],
   // 16 values, bunched at the low end with a long tail to the right
   right: [11, 13, 15, 16, 16, 16, 18, 19, 21, 22, 24, 29, 32, 36, 48, 58],
   // 16 values, bunched at the high end with a long tail to the left
@@ -1278,10 +1281,10 @@ const PRESETS = {
 };
 function gauss(rng = Math.random) { let u = 0; while (u === 0) u = rng(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * rng()); }
 
-const pg = { min: 0, max: 100, pts: [], nid: 1, opt: { mean: true, median: true, mode: true, band: false, dev: false, box: true, snap: true }, drag: null, hot: null, sel: null, down: null, geom: null };
+const pg = { min: 0, max: 100, pts: [], nid: 1, opt: { mean: true, median: true, mode: true, band: false, dev: false, box: true, curve: true, snap: true }, drag: null, hot: null, sel: null, down: null, geom: null };
 const pgWrap = $('#pgWrap'), pgSvg = $('#pgSvg');
 const PL = {};
-['band', 'dev', 'axis', 'lines', 'dots', 'labels', 'box'].forEach(k => { PL[k] = el('g', { class: 'L-' + k }, pgSvg); });
+['band', 'curve', 'dev', 'axis', 'lines', 'dots', 'labels', 'box'].forEach(k => { PL[k] = el('g', { class: 'L-' + k }, pgSvg); });
 
 function pgClampSnap(v) { v = clamp(v, pg.min, pg.max); return pg.opt.snap ? Math.round(v) : Math.round(v * 10) / 10; }
 function pgLoad(vals, presetName) {
@@ -1310,7 +1313,7 @@ function pgRender() {
   const { W, H, axisY, topY, r, x } = g;
   pgSvg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   pgSvg.setAttribute('height', H);
-  ['band', 'dev', 'axis', 'lines', 'labels', 'box'].forEach(k => PL[k].replaceChildren());
+  ['band', 'curve', 'dev', 'axis', 'lines', 'labels', 'box'].forEach(k => PL[k].replaceChildren());
   const vals = pg.pts.map(p => p.v), n = vals.length;
   const st = n ? summarize(vals) : null;
 
@@ -1336,6 +1339,19 @@ function pgRender() {
   const avail = axisY - 3 - r - (topY + r + 4);
   const sp = maxL > 0 ? Math.min(2 * r + 2, avail / maxL) : 2 * r + 2;
   const cy = lv => axisY - 3 - r - lv * sp;
+
+  // smooth shape of the data (a kernel density curve), scaled so its peak sits just above the tallest stack
+  if (st && n >= 3 && pg.opt.curve) {
+    const h = Math.max(2.5, 1.06 * (st.sd || 1) * Math.pow(n, -0.2));
+    const dens = v => vals.reduce((q, x) => q + Math.exp(-0.5 * ((v - x) / h) ** 2), 0);
+    const P = [];
+    for (let i = 0; i <= 200; i++) { const v = pg.min + (pg.max - pg.min) * i / 200; P.push([v, dens(v)]); }
+    const dmax = Math.max(...P.map(p => p[1])), peakY = Math.max(topY + 8, cy(maxL) - r - 10);
+    const Yc = d => axisY - d / dmax * (axisY - peakY);
+    const line = P.map(([v, d]) => `${x(v).toFixed(1)} ${Yc(d).toFixed(1)}`).join(' L');
+    el('path', { d: `M${x(pg.min)} ${axisY} L${line} L${x(pg.max)} ${axisY} Z`, class: 'pg-curve-fill' }, PL.curve);
+    el('path', { d: 'M' + line, class: 'pg-curve' }, PL.curve);
+  }
 
   if (st && n > 1 && pg.opt.band) {
     const a = clamp(st.mean - st.sd, pg.min, pg.max), b = clamp(st.mean + st.sd, pg.min, pg.max);
