@@ -2829,7 +2829,7 @@ function rgRun() {
   const x0 = parseFloat($('#rgX0').value), yhat = a + b * x0;
   const card = (k, v, cls = '', wide = false) => `<div class="res-card ${cls}${wide ? ' wide' : ''}"><div class="k">${k}</div><div class="v">${v}</div></div>`;
   $('#rgTiles').innerHTML = [
-    card("Pearson's r", fmt(r, 4), 'mean'), card('r² (coeff. of determination)', fmt(r2, 4), 'mean'), card("Spearman's ρ", fmt(rho, 4), 'median'),
+    card("Pearson's r", fmt(r, 4), 'mean'), card('R² (coeff. of determination)', fmt(r2, 4), 'mean'), card("Spearman's ρ", fmt(rho, 4), 'median'),
     card(`t for H₀: ρ = 0 (df = ${df})`, Number.isFinite(t) ? fmt(t, 4) : '∞', 'mode'), card('p-value', htP(p), ''), card('Std error of estimate', fmt(see, 4), 'spread'),
     card('Regression of Y on X', eq('ŷ', a, b, 'x'), 'mean', true), ...($('#rgXonY').checked ? [card('Regression of X on Y', eq('x̂', c, d, 'y'), 'median', true)] : []),
     card(Number.isFinite(x0) ? `Predicted ŷ at x = ${fmt(x0, 4)}` : 'Predicted ŷ', Number.isFinite(x0) ? fmt(yhat, 4) : '—', '', true)
