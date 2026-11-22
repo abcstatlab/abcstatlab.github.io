@@ -610,7 +610,7 @@ footer p{margin:4px 0;max-width:90ch}
               <span class="count-badge" id="calcCount" aria-live="polite"></span>
             </div>
             <div class="drop-zone" id="calcDrop">
-              <textarea id="calcInput" spellcheck="false" placeholder="Type or paste your numbers here">56, 62, 48, 71, 65, 59, 73, 80, 44, 67, 61, 58, 92, 69, 63</textarea>
+              <textarea id="calcInput" spellcheck="false" placeholder="Type or paste your numbers here">12, 15, 15, 18, 21, 22, 22, 22, 25, 29, 31, 48</textarea>
               <div class="drop-msg" aria-hidden="true">Drop the Excel or CSV file to load its numbers</div>
             </div>
             <div class="row data-tools">
@@ -769,9 +769,9 @@ footer p{margin:4px 0;max-width:90ch}
     <div class="section-head">
       <div>
         <h2 id="ne-h">Normal curve explorer</h2>
-        <p>Exam scores that follow a normal distribution. Change the mean and spread, then drag the handles to find the share of students in any range.</p>
+        <p>Set the mean μ and standard deviation σ, then drag the round points on the axis or type a and b to find the probability for any range.</p>
       </div>
-      <p class="bn">হ্যান্ডেল টেনে দেখুন কত শতাংশ শিক্ষার্থী একটি নির্দিষ্ট নম্বরের মধ্যে আছে।</p>
+      <p class="bn">μ ও σ বসান, তারপর অক্ষের বিন্দু টেনে দেখুন কোনো সীমার মধ্যে মান পড়ার সম্ভাবনা কত।</p>
     </div>
     <div class="bench">
       <div class="ne-grid">
@@ -785,7 +785,7 @@ footer p{margin:4px 0;max-width:90ch}
             </div>
             <label class="chip"><input type="checkbox" id="neBands"><span style="color:var(--ink)">68–95–99.7 rule</span></label>
           </div>
-          <div class="plot" id="neWrap"><svg id="neSvg" role="group" aria-label="Normal curve. The round handles on the axis are sliders for a and b."></svg></div>
+          <div class="plot" id="neWrap"><svg id="neSvg" role="group" aria-label="Normal curve. The round points on the axis are sliders for a and b."></svg></div>
         </div>
         <div class="ne-controls">
           <div class="slider-row"><span class="sym">μ</span><input type="range" id="neMu" min="10" max="90" step="0.5" value="60" aria-label="Mean"><input type="number" id="neMuN" min="10" max="90" step="0.5" value="60" aria-label="Mean value"></div>
@@ -801,10 +801,10 @@ footer p{margin:4px 0;max-width:90ch}
             <p id="neSentence"></p>
           </div>
           <div class="ne-out">
-            <div class="sub">Score at a percentile</div>
+            <div class="sub">Value at a percentile</div>
             <div class="two" style="margin-top:6px;align-items:end">
               <label class="field" for="nePct">Percentile (%)<input type="number" id="nePct" min="0.1" max="99.9" step="0.1" value="90"></label>
-              <div><div class="sub">Score</div><div class="big-prob" style="font-size:1.5rem" id="nePctOut">—</div></div>
+              <div><div class="sub">Value</div><div class="big-prob" style="font-size:1.5rem" id="nePctOut">—</div></div>
             </div>
             <p id="nePctSentence" style="font-size:14px"></p>
           </div>
@@ -2017,10 +2017,10 @@ function neUpdate(skipInputs) {
   const pct = (p * 100).toFixed(1) + '%';
   if (ne.mode === 'left' || ne.mode === 'right') {
     $('#neZ').innerHTML = `z = (${A} − ${fmt(ne.mu, 1)}) ÷ ${fmt(ne.sd, 1)} = <b>${fixed(za, 2)}</b>`;
-    $('#neSentence').textContent = `About ${pct} of students score ${ne.mode === 'left' ? 'below' : 'above'} ${A}.`;
+    $('#neSentence').textContent = `About ${pct} of values lie ${ne.mode === 'left' ? 'below' : 'above'} ${A}.`;
   } else {
     $('#neZ').innerHTML = `z from <b>${fixed(zlo, 2)}</b> to <b>${fixed(zhi, 2)}</b>`;
-    $('#neSentence').textContent = ne.mode === 'between' ? `About ${pct} of students score between ${Lo} and ${Hi}.` : `About ${pct} of students score below ${Lo} or above ${Hi}.`;
+    $('#neSentence').textContent = ne.mode === 'between' ? `About ${pct} of values lie between ${Lo} and ${Hi}.` : `About ${pct} of values lie below ${Lo} or above ${Hi}.`;
   }
   $('#neBField').style.visibility = (ne.mode === 'left' || ne.mode === 'right') ? 'hidden' : 'visible';
   if (!skipInputs) {
@@ -2034,7 +2034,7 @@ function nePct() {
   if (!(p > 0 && p < 100)) { $('#nePctOut').textContent = '—'; $('#nePctSentence').textContent = 'Enter a percentile between 0 and 100.'; return; }
   const z = D.invPhi(p / 100), sc = ne.mu + ne.sd * z;
   $('#nePctOut').textContent = fmt(sc, 2);
-  $('#nePctSentence').textContent = `${fmt(p, 1)}% of students score below ${fmt(sc, 2)} (z = ${fixed(z, 3)}).`;
+  $('#nePctSentence').textContent = `${fmt(p, 1)}% of values lie below ${fmt(sc, 2)} (z = ${fixed(z, 3)}).`;
 }
 function neLocalX(e) { const r = neSvg.getBoundingClientRect(); return (e.clientX - r.left) * (ne.geom.W / r.width); }
 neSvg.addEventListener('pointerdown', e => {
@@ -2935,7 +2935,7 @@ const MODALS = {
       <li><b>Concepts:</b> each card's button opens the idea in the matching tool.</li>
       <li><b>Playground:</b> drag a dot, scroll over it to nudge it by 1, click empty space to add one, and double-click (or press Delete) to remove it.</li>
       <li><b>Stat tables:</b> choose z, t, χ² or F, then type a value to highlight its cell.</li>
-      <li><b>Normal curve:</b> set μ and σ, pick an area type, then drag the round handles or type a and b.</li>
+      <li><b>Normal curve:</b> set μ and σ, pick an area type, then drag the round points on the axis or type a and b.</li>
       <li><b>🌙 button (top right):</b> switches between light and dark mode.</li>
       <li><b>⋮ menu (top right):</b> sharing, this help and About.</li>
     </ul>
