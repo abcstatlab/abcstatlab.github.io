@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var t=localStorage.getItem('abcstatlab-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
 <title>ABC Stat Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,7 +62,11 @@ a{color:var(--accent)}
 .nav::-webkit-scrollbar{display:none}
 .nav a{padding:6px 10px;border-radius:6px;color:var(--muted);text-decoration:none;white-space:nowrap;font-size:14px;font-weight:500}
 .nav a:hover,.nav a.is-active{color:var(--ink);background:var(--surface-2)}
-.menu-wrap{position:relative;margin-left:auto;flex:none}
+.theme-btn{margin-left:auto;flex:none}
+.theme-btn .i-sun{display:none}
+:root[data-theme="dark"] .theme-btn .i-sun{display:block}
+:root[data-theme="dark"] .theme-btn .i-moon{display:none}
+.menu-wrap{position:relative;margin-left:-4px;flex:none}
 .icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
 .icon-btn:hover,.icon-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
 .menu{position:absolute;right:0;top:calc(100% + 8px);min-width:250px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 18px 40px -16px rgba(15,25,50,.35),0 2px 6px rgba(15,25,50,.08);z-index:40}
@@ -90,7 +95,8 @@ a{color:var(--accent)}
 .main-tabs a:hover{color:var(--ink)}
 .main-tabs a[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
 .main-tabs .sh{display:none}
-@media (max-width:520px){.main-tabs .lg{display:none}.main-tabs .sh{display:inline}.main-tabs{justify-content:space-around}}
+@media (max-width:520px){.main-tabs .lg{display:none}.main-tabs .sh{display:inline}.main-tabs{justify-content:space-between;gap:0}.main-tabs a{padding:9px 6px 8px;gap:5px;font-size:13px}}
+@media (max-width:400px){.main-tabs a svg{display:none}.main-tabs a{padding:9px 5px 8px}}
 .drawer-label{margin:4px 12px 2px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 @media (max-width:640px){.main-tabs{margin:6px -12px -8px;padding:0 12px}.main-tabs a{font-size:13.5px;padding:9px 9px 8px}}
 /* type */
@@ -300,9 +306,11 @@ svg text{font-family:var(--font-mono);font-size:12.5px}
 .ht-pick{display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:14px}
 .ht-pick-g{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .ht-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:18px;align-items:start}
-@media (max-width:900px){.ht-grid{grid-template-columns:1fr}}
+@media (max-width:900px){.ht-grid{grid-template-columns:minmax(0,1fr)}}
+.ht-grid > *,.ht-form > *,.ruled,.ruled-box{min-width:0}
+.ht-form .ruled textarea{min-width:0;max-width:100%}
 .ht-in .seg[hidden],.ht-in [hidden]{display:none!important}
-.ht-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ht-form{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(150px,100%),1fr));gap:10px}
 .ht-form .wide{grid-column:1/-1}
 .ht-form textarea{min-height:0;background:var(--surface)}
 .ht-form input,.ht-form select{background:var(--surface)}
@@ -391,6 +399,7 @@ details.steps[open] .when-closed{display:none}
 .lookup{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-bottom:10px}
 .lookup label.field{width:auto}
 .lookup input[type="number"]{width:110px}
+.lookup .seg[hidden]{display:none}
 .lookup-out{font-family:var(--font-mono);font-size:14.5px;padding:8px 12px;border-radius:7px;background:var(--surface-2);margin:0 0 12px;font-variant-numeric:tabular-nums}
 .ttable-wrap{max-height:470px;overflow:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
 table.st{border-collapse:separate;border-spacing:0;font-family:var(--font-mono);font-size:13px;font-variant-numeric:tabular-nums;width:100%}
@@ -436,10 +445,10 @@ table.st{border-collapse:separate;border-spacing:0;font-family:var(--font-mono);
 .concept .btn{align-self:flex-start;margin-top:auto}
 .concept.mean-c{border-top:3px solid var(--mean)} .concept.median-c{border-top:3px solid var(--median)} .concept.mode-c{border-top:3px solid var(--mode)} .concept.spread-c{border-top:3px solid var(--accent)}
 
-footer{margin-top:56px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--surface) 55%,transparent);padding:22px 0 40px;font-size:13.5px;color:var(--muted)}
+footer{margin-top:28px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--surface) 55%,transparent);padding:14px 0 12px;font-size:13.5px;color:var(--muted)}
 footer p{margin:4px 0;max-width:90ch}
-.copy{text-align:center;max-width:none!important;margin-top:16px!important;padding-top:14px;border-top:1px solid var(--line);font-size:13px}
-.credit{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.copy{text-align:center;max-width:none!important;margin-top:10px!important;padding-top:10px;border-top:1px solid var(--line);font-size:13px}
+.credit{display:flex;align-items:center;gap:12px;margin-bottom:0}
 .credit .avatar{position:relative;flex:none;width:56px;height:56px;border-radius:50%;display:block;transition:transform .15s ease}
 .credit .avatar img{width:56px;height:56px;border-radius:50%;object-fit:cover;display:block;border:2px solid var(--surface);box-shadow:0 0 0 1px var(--line),0 6px 16px -8px rgba(15,25,50,.45)}
 .credit .avatar:hover{transform:translateY(-1px)}
@@ -469,16 +478,15 @@ footer p{margin:4px 0;max-width:90ch}
   </a>
   <span class="crumb tagline-bn">পরিসংখ্যানের হাতেখড়ি</span>
   <span class="crumb tagline">Hope you’ll love statistics</span>
+  <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Dark mode">
+    <svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    <svg class="i-sun" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
   <div class="menu-wrap">
     <button class="icon-btn" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="More options">
       <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>
     </button>
     <div class="menu" id="siteMenu" role="menu" aria-label="More options" hidden>
-      <button class="menu-item" role="menuitem" type="button" data-menu="theme">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <span id="themeLabel">Dark mode</span><span class="hint-r" id="themeState">Off</span>
-      </button>
-      <div class="menu-sep"></div>
       <div class="menu-label">Share</div>
       <button class="menu-item" role="menuitem" type="button" data-menu="copy">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -601,15 +609,8 @@ footer p{margin:4px 0;max-width:90ch}
               <label for="calcInput" class="data-title">Your data</label>
               <span class="count-badge" id="calcCount" aria-live="polite"></span>
             </div>
-            <div class="row data-ex" role="group" aria-label="Example data sets">
-              <span class="group-label">Try</span>
-              <button class="chip-btn" type="button" data-example="rice">🌾 Rice yield</button>
-              <button class="chip-btn" type="button" data-example="milk">🐄 Milk yield</button>
-              <button class="chip-btn" type="button" data-example="fish">🐟 Fish weight</button>
-              <button class="chip-btn" type="button" data-example="scores">📝 Test scores</button>
-            </div>
             <div class="drop-zone" id="calcDrop">
-              <textarea id="calcInput" spellcheck="false" placeholder="Type or paste your numbers here">12, 15, 15, 18, 21, 22, 22, 22, 25, 29, 31, 48</textarea>
+              <textarea id="calcInput" spellcheck="false" placeholder="Type or paste your numbers here">56, 62, 48, 71, 65, 59, 73, 80, 44, 67, 61, 58, 92, 69, 63</textarea>
               <div class="drop-msg" aria-hidden="true">Drop the Excel or CSV file to load its numbers</div>
             </div>
             <div class="row data-tools">
@@ -832,14 +833,18 @@ footer p{margin:4px 0;max-width:90ch}
       <div role="tabpanel" id="panel-z" aria-labelledby="tab-z">
         <div class="table-head">
           <div>
-            <h3>Standard normal table: area to the left of z</h3>
-            <p class="sub" style="margin-top:4px">Row gives z to one decimal, column adds the second decimal. Example: z = 1.96 is row 1.9, column 0.06, giving 0.9750.</p>
+            <h3 id="zTitle">Standard normal table: area to the left of z</h3>
+            <p class="sub" id="zNote" style="margin-top:4px">Row gives z to one decimal, column adds the second decimal. Example: z = 1.96 is row 1.9, column 0.06, giving 0.9750.</p>
           </div>
           <svg id="zMini" viewBox="0 0 230 92" role="img" aria-label="Shaded area to the left of z under the standard normal curve"></svg>
         </div>
         <div class="lookup">
           <label class="field" for="zIn">z<input type="number" id="zIn" step="0.01" value="1.96"></label>
-          <div class="seg" role="group" aria-label="Show negative or positive z">
+          <div class="seg" role="group" aria-label="Table type">
+            <button type="button" data-zmode="left" aria-pressed="true">Area to the left</button>
+            <button type="button" data-zmode="two" aria-pressed="false">Two-tailed</button>
+          </div>
+          <div class="seg" id="zSignSeg" role="group" aria-label="Show negative or positive z">
             <button type="button" data-zsign="neg" aria-pressed="false">Negative z</button>
             <button type="button" data-zsign="pos" aria-pressed="true">Positive z</button>
           </div>
@@ -954,7 +959,7 @@ footer p{margin:4px 0;max-width:90ch}
         <div class="role">Assistant Professor, Bangladesh Agricultural University (BAU)</div>
       </div>
     </div>
-    <p class="copy">Copyright © 2026 Md. Fakhrul Hasan &nbsp;|&nbsp; All rights reserved</p>
+    <p class="copy">Copyright © 2026 Md. Fakhrul Hasan</p>
   </div>
 </footer>
 
@@ -1574,16 +1579,16 @@ const STATS = [
   { k: 'q3', label: () => 'Q3', val: d => fmt(d.q3, 4), copy: d => fmt(d.q3, 6), cls: '', g: 'spread' },
   { k: 'pct', label: () => 'Percentile (Pₖ)', val: d => fmt(pctOf(d.s, pctK), 4), copy: d => fmt(pctOf(d.s, pctK), 6), cls: '', g: 'loc', copyLabel: () => 'P' + fmtK(pctK) },
   { k: 'iqr', label: () => 'IQR', val: d => fmt(d.iqr, 4), copy: d => fmt(d.iqr, 6), cls: 'spread', g: 'spread' },
-  { k: 'cv', label: () => 'Coeff. of variation (CV)', val: d => Number.isFinite(d.cv) ? fmt(d.cv, 2) + '%' : '—', copy: d => Number.isFinite(d.cv) ? fmt(d.cv, 4) + '%' : '—', cls: '', g: 'spread' },
+  { k: 'cv', label: () => 'Coeff. of variation', tip: 'CV: coefficient of variation', val: d => Number.isFinite(d.cv) ? fmt(d.cv, 2) + '%' : '—', copy: d => Number.isFinite(d.cv) ? fmt(d.cv, 4) + '%' : '—', cls: '', g: 'spread' },
   { k: 'skewm', label: () => 'Skewness', parts: d => [['β₁', d.b1, 'μ₃² ÷ μ₂³'], ['γ₁', d.g1, 'μ₃ ÷ μ₂<sup>3/2</sup>']], cls: 'mode', g: 'shape' },
   { k: 'kurtm', label: () => 'Kurtosis', parts: d => [['β₂', d.b2, 'μ₄ ÷ μ₂²'], ['γ₂', d.g2, 'β₂ − 3']], cls: 'mode', g: 'shape' },
-  { k: 'pcs', label: () => "Pearson's coeff. of skewness (PCS)", f: s => '3(' + (s.n === 'n' ? 'x̄' : 'μ') + ' − Md) ÷ ' + s.sd, val: d => fmt(d.pcs, 4), copy: d => fmt(d.pcs, 6), cls: 'mode', g: 'shape' },
-  { k: 'bcs', label: () => "Bowley's coeff. of skewness (BCS)", f: () => '(Q₃ + Q₁ − 2Md) ÷ (Q₃ − Q₁)', val: d => fmt(d.bcs, 4), copy: d => fmt(d.bcs, 6), cls: 'mode', g: 'shape' },
+  { k: 'pcs', label: () => "Pearson's coeff. of skewness", tip: "PCS: Pearson's coefficient of skewness", f: s => '3(' + (s.n === 'n' ? 'x̄' : 'μ') + ' − Md) ÷ ' + s.sd, val: d => fmt(d.pcs, 4), copy: d => fmt(d.pcs, 6), cls: 'mode', g: 'shape' },
+  { k: 'bcs', label: () => "Bowley's coeff. of skewness", tip: "BCS: Bowley's coefficient of skewness", f: () => '(Q₃ + Q₁ − 2Md) ÷ (Q₃ − Q₁)', val: d => fmt(d.bcs, 4), copy: d => fmt(d.bcs, 6), cls: 'mode', g: 'shape' },
   { k: 'skew', label: s => s.n === 'n' ? 'Skewness G₁ (Excel SKEW)' : 'Skewness g₁', val: d => fmt(d.skew, 4), copy: d => fmt(d.skew, 6), cls: '', g: '' },
   { k: 'kurt', label: s => s.n === 'n' ? 'Excess kurtosis G₂ (Excel KURT)' : 'Excess kurtosis g₂', val: d => fmt(d.kurt, 4), copy: d => fmt(d.kurt, 6), cls: '', g: '' },
   { k: 'out', label: () => 'Outliers (1.5 IQR)', val: d => d.outliers.length ? d.outliers.slice(0, 6).map(v => fmt(v, 4)).join(', ') + (d.outliers.length > 6 ? '…' : '') : 'none', copy: d => d.outliers.length ? d.outliers.join(', ') : 'none', cls: '', g: '' }
 ];
-const DEFAULT_STATS = ['mean', 'sd', 'cv', 'skewm', 'kurtm', 'pcs', 'bcs'];
+const DEFAULT_STATS = ['mean', 'sd', 'cv', 'skewm', 'kurtm'];
 // result groups used by the picker and the quick-pick buttons
 const STAT_GROUPS = [
   { g: 'loc', title: 'Measures of location', bn: 'অবস্থানের পরিমাপ', keys: ['mean', 'median', 'mode', 'q1', 'q3', 'pct'] },
@@ -1596,15 +1601,15 @@ const STAT_ORDER = STAT_GROUPS.flatMap(G => G.keys);
 STATS.sort((a, b) => STAT_ORDER.indexOf(a.k) - STAT_ORDER.indexOf(b.k));
 STATS.forEach(x => { if (x.parts) { x.val = d => x.parts(d).map(([k, v]) => `${k} = ${fmt(v, 4)}`).join(', '); x.copy = d => x.parts(d).map(([k, v]) => `${k} = ${fmt(v, 6)}`).join(', '); } });
 let statSel = new Set(DEFAULT_STATS);
-try { const saved = JSON.parse(localStorage.getItem('abcstatlab-calc-stats-v5') || 'null'); if (Array.isArray(saved)) statSel = new Set(saved.filter(k => STATS.some(x => x.k === k))); } catch (_) {}
+try { const saved = JSON.parse(localStorage.getItem('abcstatlab-calc-stats-v6') || 'null'); if (Array.isArray(saved)) statSel = new Set(saved.filter(k => STATS.some(x => x.k === k))); } catch (_) {}
 const calcSym = () => calcSample ? { v: 's²', sd: 's', n: 'n' } : { v: 'σ²', sd: 'σ', n: 'N' };
 function renderPicker() {
   const sym = calcSym();
-  const item = x => `<label class="${statSel.has(x.k) ? 'on' : ''}"><input type="checkbox" data-stat="${x.k}"${statSel.has(x.k) ? ' checked' : ''}>${x.label(sym)}</label>`;
+  const item = x => `<label class="${statSel.has(x.k) ? 'on' : ''}"${x.tip ? ` title="${x.tip}"` : ''}><input type="checkbox" data-stat="${x.k}"${statSel.has(x.k) ? ' checked' : ''}>${x.label(sym)}</label>`;
   $('#pickGrid').innerHTML = STAT_GROUPS.map(G => `<div class="pick-sec"><p class="pick-h">${G.title}</p><div class="pick-grid">${STATS.filter(x => x.g === G.g).map(item).join('')}</div></div>`).join('');
   $('#pickCount').textContent = `${statSel.size} of ${STATS.length} shown`;
 }
-function saveSel() { try { localStorage.setItem('abcstatlab-calc-stats-v5', JSON.stringify([...statSel])); } catch (_) {} }
+function saveSel() { try { localStorage.setItem('abcstatlab-calc-stats-v6', JSON.stringify([...statSel])); } catch (_) {} }
 function renderCalcTiles() {
   const box = $('#calcTiles');
   if (!calcLast) return;
@@ -1618,7 +1623,7 @@ function renderCalcTiles() {
         const v = x.val(d);
         // long lists (several modes or outliers) take a full row so they stay readable
         const wide = v.length > 16 ? ' wide' : '';
-        return `<div class="res-card ${x.cls}${wide}"><div class="k">${x.label(sym)}</div><div class="v">${v}</div></div>`;
+        return `<div class="res-card ${x.cls}${wide}"${x.tip ? ` title="${x.tip}"` : ''}><div class="k">${x.label(sym)}</div><div class="v">${v}</div></div>`;
       }).join('');
 }
 $('#calcTiles').addEventListener('input', e => {
@@ -1779,13 +1784,6 @@ function calcChart(d) {
 }
 calcIn.addEventListener('input', () => { clearTimeout(calcIn._t); calcIn._t = setTimeout(calcRun, 120); });
 /* data input: examples, random, sort, upload, drag and drop, clear with undo */
-const EXAMPLES = {
-  rice: [4.2, 4.8, 5.1, 3.9, 4.5, 5.6, 4.9, 4.4, 5.0, 4.7, 3.6, 5.3, 4.6, 4.1, 6.8],
-  milk: [8.5, 10.2, 9.1, 12.4, 7.8, 9.6, 11.0, 8.9, 10.5, 9.3, 15.2, 9.8],
-  fish: [112, 98, 135, 120, 104, 141, 127, 95, 118, 132, 109, 186, 124, 101, 115, 129],
-  scores: [56, 62, 48, 71, 65, 59, 73, 80, 44, 67, 61, 58, 92, 69, 63]
-};
-const EX_NOTE = { rice: 'Rice yield (t/ha) from 15 plots', milk: 'Daily milk yield (litres) of 12 cows', fish: 'Weight (g) of 16 fish', scores: 'Test scores of 15 students' };
 function setData(vals, note) {
   calcIn.value = Array.isArray(vals) ? vals.join(', ') : vals;
   calcIn.classList.remove('flash'); void calcIn.offsetWidth; calcIn.classList.add('flash');
@@ -1793,7 +1791,6 @@ function setData(vals, note) {
   if (note) toast(note);
 }
 function markExample(key) { $$('[data-example]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.example === key))); }
-$$('[data-example]').forEach(b => b.addEventListener('click', () => { const k = b.dataset.example; setData(EXAMPLES[k], EX_NOTE[k] + ' (example data)'); markExample(k); }));
 $('#calcRandom').addEventListener('click', () => { setData(Array.from({ length: 20 }, () => Math.round(50 + 10 * gauss())), '20 random values, mean about 50'); markExample(null); });
 $('#calcSort').addEventListener('click', () => { const { vals } = parseData(calcIn.value); if (vals.length) setData(S.sorted(vals)); });
 let clearUndo = null, clearT;
@@ -1990,12 +1987,24 @@ function neRender() {
   handles.forEach(h => {
     const v = ne[h], hx = x(v);
     el('line', { x1: hx, x2: hx, y1: y(nePdf(v)), y2: base, class: 'handle-line' }, neSvg);
-    svgText(neSvg, hx, Math.max(14, y(nePdf(v)) - 10), `${h} = ${fmt(v, 1)}`, 't-mean halo').setAttribute('style', 'fill:var(--accent)');
+    // keep the label clear of the μ label at the peak: push it to the side the handle is on
+    const near = Math.abs(hx - x(ne.mu)) < 70, side = v < ne.mu ? -1 : 1;
+    svgText(neSvg, near ? hx + side * 6 : hx, Math.max(14, y(nePdf(v)) - 10) + (near ? 14 : 0), `${h} = ${fmt(v, 1)}`, 't-mean halo', near ? (side < 0 ? 'end' : 'start') : 'middle').setAttribute('style', 'fill:var(--accent)');
     const c = el('circle', { cx: hx, cy: base, r: 9, class: 'handle' + (ne.drag === h ? ' is-drag' : ''), tabindex: 0, role: 'slider', 'aria-label': h, 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': v, 'data-h': h }, neSvg);
     if (ne.drag === h) c.setAttribute('r', 11);
   });
 }
+// when the percentile box was used last, the graph follows it: P(X < a) with a = the score at that percentile
+let nePctLink = false;
+function nePctToGraph() {
+  const p = parseFloat($('#nePct').value);
+  if (!(p > 0 && p < 100)) return;
+  ne.mode = 'left';
+  ne.a = clamp(ne.mu + ne.sd * D.invPhi(p / 100), 0, 100);
+  $$('[data-nemode]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.nemode === 'left')));
+}
 function neUpdate(skipInputs) {
+  if (nePctLink) { nePctToGraph(); $('#neA').value = +ne.a.toFixed(2); }
   neRender();
   const p = neProb();
   const lo = Math.min(ne.a, ne.b), hi = Math.max(ne.a, ne.b);
@@ -2016,7 +2025,7 @@ function neUpdate(skipInputs) {
   $('#neBField').style.visibility = (ne.mode === 'left' || ne.mode === 'right') ? 'hidden' : 'visible';
   if (!skipInputs) {
     $('#neMu').value = ne.mu; $('#neMuN').value = ne.mu; $('#neSd').value = ne.sd; $('#neSdN').value = ne.sd;
-    $('#neA').value = ne.a; $('#neB').value = ne.b;
+    $('#neA').value = +ne.a.toFixed(2); $('#neB').value = +ne.b.toFixed(2);
   }
   nePct();
 }
@@ -2031,6 +2040,7 @@ function neLocalX(e) { const r = neSvg.getBoundingClientRect(); return (e.client
 neSvg.addEventListener('pointerdown', e => {
   const h = e.target.closest('.handle');
   if (!h) return;
+  nePctLink = false;
   ne.drag = h.dataset.h;
   try { neSvg.setPointerCapture(e.pointerId); } catch (_) {}
   e.preventDefault();
@@ -2049,6 +2059,7 @@ neSvg.addEventListener('keydown', e => {
   if (!h) return;
   const k = h.dataset.h;
   let d = 0;
+  if (/Arrow/.test(e.key)) nePctLink = false;
   if (e.key === 'ArrowRight' || e.key === 'ArrowUp') d = 1; else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') d = -1; else return;
   e.preventDefault();
   ne[k] = clamp(ne[k] + d * (e.shiftKey ? 5 : 0.5), 0, 100);
@@ -2065,16 +2076,17 @@ bindPair('#neMu', '#neMuN', 'mu', 10, 90);
 bindPair('#neSd', '#neSdN', 'sd', 4, 25);
 ['a', 'b'].forEach(k => {
   const inp = $('#ne' + k.toUpperCase());
-  inp.addEventListener('input', () => { const v = parseFloat(inp.value); if (Number.isFinite(v)) { ne[k] = clamp(v, 0, 100); neUpdate(true); } });
+  inp.addEventListener('input', () => { const v = parseFloat(inp.value); if (Number.isFinite(v)) { nePctLink = false; ne[k] = clamp(v, 0, 100); neUpdate(true); } });
   inp.addEventListener('change', () => { inp.value = ne[k]; });
 });
 $$('[data-nemode]').forEach(b => b.addEventListener('click', () => {
+  nePctLink = false;
   ne.mode = b.dataset.nemode;
   $$('[data-nemode]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   neUpdate();
 }));
 $('#neBands').addEventListener('change', e => { ne.bands = e.target.checked; neUpdate(); });
-$('#nePct').addEventListener('input', nePct);
+$('#nePct').addEventListener('input', () => { const p = parseFloat($('#nePct').value); if (p > 0 && p < 100) { nePctLink = true; neUpdate(true); } else nePct(); });
 
 /* ================= Tables ================= */
 const T_DF = [...Array.from({ length: 30 }, (_, i) => i + 1), 40, 50, 60, 80, 100, 120, Infinity];
@@ -2106,9 +2118,18 @@ function markHit(table, wrap, cell) {
   wrap.scrollLeft += (cr.left - wr.left) - wrap.clientWidth / 2 + cr.width / 2;
 }
 let zSign = 'pos';
+let zMode = 'left';
+const Z_TXT = {
+  left: ['Standard normal table: area to the left of z', 'Row gives z to one decimal, column adds the second decimal. Example: z = 1.96 is row 1.9, column 0.06, giving 0.9750.'],
+  two: ['Two-tailed standard normal table: P(|Z| > z)', 'Each value is the total area in both tails beyond −z and +z. Example: z = 1.96 is row 1.9, column 0.06, giving 0.0500.']
+};
 function buildZ() {
   const tb = $('#zTable');
-  const neg = zSign === 'neg';
+  const two = zMode === 'two', neg = !two && zSign === 'neg';
+  $('#zTitle').textContent = Z_TXT[zMode][0]; $('#zNote').textContent = Z_TXT[zMode][1];
+  $('#zSignSeg').hidden = two;
+  $$('[data-zmode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.zmode === zMode)));
+  zMiniDraw();
   let h = '<thead><tr><th>z</th>' + Array.from({ length: 10 }, (_, c) => `<th>${neg ? '−' : ''}0.0${c}</th>`).join('') + '</tr></thead><tbody>';
   const rows = [];
   for (let i = 0; i <= 34; i++) rows.push(i);
@@ -2116,7 +2137,7 @@ function buildZ() {
   rows.forEach(i => {
     const r = i / 10;
     h += `<tr><th>${neg ? '−' : ''}${r.toFixed(1)}</th>`;
-    for (let c = 0; c < 10; c++) { const z = (neg ? -1 : 1) * (r + c / 100); h += `<td data-r="${i}" data-c="${c}">${D.Phi(z).toFixed(4)}</td>`; }
+    for (let c = 0; c < 10; c++) { const z = (neg ? -1 : 1) * (r + c / 100); h += `<td data-r="${i}" data-c="${c}">${(two ? 2 * (1 - D.Phi(z)) : D.Phi(z)).toFixed(4)}</td>`; }
     h += '</tr>';
   });
   tb.innerHTML = h + '</tbody>';
@@ -2127,11 +2148,15 @@ function zLookup(scroll = true) {
   const out = $('#zOut');
   if (!Number.isFinite(z)) { out.textContent = 'Enter a z value such as 1.96 or −0.84.'; markHit($('#zTable'), $('#zWrap'), null); return; }
   const p = D.Phi(z);
+  zMiniDraw();
   const sign = z < 0 || Object.is(z, -0) ? 'neg' : 'pos';
-  if (sign !== zSign) { zSign = sign; buildZ(); }
+  if (zMode === 'left' && sign !== zSign) { zSign = sign; buildZ(); }
   const az = Math.round(Math.abs(z) * 100);
   const i = Math.floor(az / 10), c = az % 10;
-  out.textContent = `P(Z < ${fixed(z, 2)}) = ${p.toFixed(4)}   ·   P(Z > ${fixed(z, 2)}) = ${(1 - p).toFixed(4)}   ·   P(−${fixed(Math.abs(z), 2)} < Z < ${fixed(Math.abs(z), 2)}) = ${(2 * D.Phi(Math.abs(z)) - 1).toFixed(4)}` + (i > 34 ? '   (beyond the table: |z| > 3.49)' : '');
+  const zs = v => (v < 0 ? '−' : '') + String(+Math.abs(v).toFixed(4)), zt = zs(z);
+  const az2 = zs(Math.abs(z)), pt = 2 * (1 - D.Phi(Math.abs(z)));
+  if (zMode === 'two') out.innerHTML = `<b>P(|Z| &gt; ${az2}) = ${pt.toFixed(4)}</b> &nbsp;(central area P(−${az2} &lt; Z &lt; ${az2}) = ${(1 - pt).toFixed(4)})` + (i > 34 ? ' &nbsp;·&nbsp; beyond the table: |z| > 3.49' : '');
+  else out.innerHTML = `<b>Φ(${zt}) = P(Z &lt; ${zt}) = ${p.toFixed(4)}</b> &nbsp;(right tail P(Z &gt; ${zt}) = ${(1 - p).toFixed(4)})` + (i > 34 ? ' &nbsp;·&nbsp; beyond the table: |z| > 3.49' : '');
   const cell = i <= 34 ? $(`#zTable td[data-r="${i}"][data-c="${c}"]`) : null;
   if (scroll) markHit($('#zTable'), $('#zWrap'), cell); else if (cell) { $$('#zTable td.hit').forEach(x => x.classList.remove('hit')); cell.classList.add('hit'); }
 }
@@ -2159,7 +2184,7 @@ function tLookup(scroll = true) {
   const v = D.tInv(1 - a1, df);
   const ri = T_DF.indexOf(df), ci = T_A1.indexOf(a1);
   const desc = tails === 2 ? `two-tail α = ${+(2 * a1).toPrecision(3)} (${+((1 - 2 * a1) * 100).toPrecision(4)}% confidence)` : `one-tail α = ${a1}`;
-  out.textContent = `t = ${v.toFixed(4)}  for df = ${df}, ${desc}` + (tails === 2 ? `   ·   reject H₀ if |t| > ${v.toFixed(3)}` : `   ·   reject H₀ if t > ${v.toFixed(3)}`) + (ri < 0 ? `   ·   df ${df} is not a table row, so this value was computed exactly` : '');
+  out.innerHTML = `<b>t<sub>${+a1.toPrecision(3)}, ${df}</sub> = ${v.toFixed(4)}</b> &nbsp;(df = ${df}, ${tails === 2 ? 'two-tailed α = ' + +(2 * a1).toPrecision(3) : 'one-tailed α = ' + a1})` + (ri < 0 ? ` &nbsp;·&nbsp; df ${df} is not a table row, so this value was computed exactly` : '');
   const cell = ri >= 0 ? $(`#tTable td[data-r="${ri}"][data-c="${ci}"]`) : null;
   if (scroll) markHit($('#tTable'), $('#tWrap'), cell);
   else { $$('#tTable td.hit').forEach(x => x.classList.remove('hit')); if (cell) cell.classList.add('hit'); }
@@ -2181,7 +2206,7 @@ function cLookup(scroll = true) {
   if (!(df >= 1)) { out.textContent = 'Degrees of freedom must be a whole number of 1 or more.'; markHit($('#cTable'), $('#cWrap'), null); return; }
   const v = D.chi2Inv(1 - a, df);
   const ri = C_DF.indexOf(df), ci = C_A.indexOf(a);
-  out.textContent = `χ² = ${v < 0.01 ? v.toPrecision(4) : v.toFixed(4)}  for df = ${df}, α = ${a}   ·   reject H₀ if your χ² > ${v < 0.01 ? v.toPrecision(3) : v.toFixed(3)}` + (ri < 0 ? `   ·   df ${df} is not a table row, so this value was computed exactly` : '');
+  out.innerHTML = `<b>χ²<sub>${a}, ${df}</sub> = ${v < 0.01 ? v.toPrecision(4) : v.toFixed(4)}</b> &nbsp;(df = ${df}, area α = ${a} to the right)` + (ri < 0 ? ` &nbsp;·&nbsp; df ${df} is not a table row, so this value was computed exactly` : '');
   const cell = ri >= 0 ? $(`#cTable td[data-r="${ri}"][data-c="${ci}"]`) : null;
   if (scroll) markHit($('#cTable'), $('#cWrap'), cell);
   else { $$('#cTable td.hit').forEach(x => x.classList.remove('hit')); if (cell) cell.classList.add('hit'); }
@@ -2210,12 +2235,13 @@ function fLookup(scroll = true) {
   if (!(d1 >= 1) || !(d2 >= 1)) { out.textContent = 'Both degrees of freedom must be whole numbers of 1 or more.'; markHit($('#fTable'), $('#fWrap'), null); return; }
   const v = D.fInv(1 - a, d1, d2);
   const ri = F_D2.indexOf(d2), ci = F_D1.indexOf(d1);
-  out.textContent = `F = ${v.toFixed(4)}  for df₁ = ${d1}, df₂ = ${d2}, α = ${a}   ·   reject H₀ if your F > ${v.toFixed(3)}` + (ri < 0 || ci < 0 ? `   ·   this df is not a table row or column, so the value was computed exactly` : '');
+  out.innerHTML = `<b>F<sub>${a}</sub>(${d1}, ${d2}) = ${v.toFixed(4)}</b> &nbsp;(df₁ = ${d1}, df₂ = ${d2}, area α = ${a} to the right)` + (ri < 0 || ci < 0 ? ` &nbsp;·&nbsp; this df is not a table row or column, so the value was computed exactly` : '');
   const cell = ri >= 0 && ci >= 0 ? $(`#fTable td[data-r="${ri}"][data-c="${ci}"]`) : null;
   if (scroll) markHit($('#fTable'), $('#fWrap'), cell);
   else { $$('#fTable td.hit').forEach(x => x.classList.remove('hit')); if (cell) cell.classList.add('hit'); }
 }
 function miniCurve(svg, pdf, x0, x1, s0, s1, label) {
+  const regions = Array.isArray(s0) ? s0 : [[s0, s1]];
   svg.replaceChildren();
   const W = 230, base = 70, top = 8;
   const N = 120;
@@ -2223,16 +2249,27 @@ function miniCurve(svg, pdf, x0, x1, s0, s1, label) {
   const pts = [];
   for (let i = 0; i <= N; i++) { const v = x0 + (x1 - x0) * i / N; const d = pdf(v); pts.push([v, d]); if (d > ymax) ymax = d; }
   const X = v => 8 + (v - x0) / (x1 - x0) * (W - 16), Y = d => base - d / ymax * (base - top);
-  let area = `M${X(s0)} ${base}`;
-  pts.filter(p => p[0] >= s0 && p[0] <= s1).forEach(p => { area += ` L${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`; });
-  area += ` L${X(s1)} ${Y(pdf(s1)).toFixed(1)} L${X(s1)} ${base} Z`;
-  el('path', { d: area, class: 'area', style: 'opacity:.45' }, svg);
+  regions.forEach(([a, b]) => {
+    let area = `M${X(a)} ${base} L${X(a)} ${Y(pdf(a)).toFixed(1)}`;
+    pts.filter(p => p[0] >= a && p[0] <= b).forEach(p => { area += ` L${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`; });
+    area += ` L${X(b)} ${Y(pdf(b)).toFixed(1)} L${X(b)} ${base} Z`;
+    el('path', { d: area, class: 'area', style: 'opacity:.7' }, svg);
+  });
   el('path', { d: 'M' + pts.map(p => `${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(' L'), class: 'curve', style: 'stroke-width:2' }, svg);
   el('line', { x1: 8, x2: W - 8, y1: base, y2: base, class: 'ax-line' }, svg);
   label.forEach(([v, txt]) => svgText(svg, X(v), 86, txt, 't-muted').setAttribute('style', 'font-size:11px'));
 }
+// small curve above the z table: follows the z typed in the lookup box
+function zMiniDraw() {
+  let z = parseFloat($('#zIn') ? $('#zIn').value : NaN);
+  if (!Number.isFinite(z)) z = zMode === 'two' ? 1.96 : (zSign === 'neg' ? -1 : 1);
+  const zc = clamp(z, -3.3, 3.3), az = clamp(Math.abs(z), 0.05, 3.3);
+  const lab = v => (v < 0 ? '−' : '') + String(+Math.abs(v).toFixed(2));
+  if (zMode === 'two') miniCurve($('#zMini'), v => D.phi(v), -3.5, 3.5, [[-3.5, -az], [az, 3.5]], null, [[-az, '−' + lab(az)], [az, lab(az)]]);
+  else miniCurve($('#zMini'), v => D.phi(v), -3.5, 3.5, -3.5, zc, [[zc, 'z = ' + lab(z)], ...(Math.abs(zc) > 0.9 ? [[0, '0']] : [])]);
+}
 function buildMinis() {
-  miniCurve($('#zMini'), v => D.phi(v), -3.5, 3.5, -3.5, 1, [[0, '0'], [1, 'z'], [-2.4, 'area']]);
+  zMiniDraw();
   miniCurve($('#tMini'), v => D.tPdf(v, 4), -4.5, 4.5, 2.13, 4.5, [[0, '0'], [2.13, 't'], [3.5, 'α']]);
   miniCurve($('#cMini'), v => D.chi2Pdf(v, 5), 0.01, 18, 11.07, 18, [[0.4, '0'], [11.07, 'χ²'], [15, 'α']]);
   miniCurve($('#fMini'), v => D.fPdf(v, 5, 10), 0.02, 4.2, 2.52, 4.2, [[0.15, '0'], [2.52, 'F'], [3.3, 'α']]);
@@ -2240,7 +2277,8 @@ function buildMinis() {
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => {
   $$('[data-tab]').forEach(x => { const on = x === b; x.setAttribute('aria-selected', String(on)); $('#panel-' + x.dataset.tab).hidden = !on; });
 }));
-$$('[data-zsign]').forEach(b => b.addEventListener('click', () => { zSign = b.dataset.zsign; buildZ(); zLookup(false); }));
+$$('[data-zsign]').forEach(b => b.addEventListener('click', () => { zSign = b.dataset.zsign; const zi = $('#zIn'), v = parseFloat(zi.value); if (Number.isFinite(v) && (v < 0) !== (zSign === 'neg')) zi.value = String(-v); buildZ(); zLookup(false); }));
+$$('[data-zmode]').forEach(b => b.addEventListener('click', () => { zMode = b.dataset.zmode; buildZ(); zLookup(true); }));
 $('#zIn').addEventListener('input', () => zLookup(true));
 ['#tDf', '#tAlpha', '#tTails'].forEach(id => $(id).addEventListener(id === '#tDf' ? 'input' : 'change', () => tLookup(true)));
 ['#cDf', '#cAlpha'].forEach(id => $(id).addEventListener(id === '#cDf' ? 'input' : 'change', () => cLookup(true)));
@@ -2852,12 +2890,20 @@ window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
 /* ================= Theme (light by default) + ⋮ menu ================= */
 function setTheme(t, save) {
   document.documentElement.setAttribute('data-theme', t);
-  $('#themeState').textContent = t === 'dark' ? 'On' : 'Off';
+  const b = $('#themeBtn'), dark = t === 'dark';
+  b.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  b.title = dark ? 'Light mode' : 'Dark mode';
   if (save) { try { localStorage.setItem('abcstatlab-theme', t); } catch (_) {} }
+  // charts read colours when drawn, so redraw the visible ones
+  requestAnimationFrame(() => { try { pgRender(); neRender(); if (calcLast) calcChart(calcLast); if (!$('#tests').hidden) htRun(); if (!$('#regression').hidden) rgPlot(); } catch (_) {} });
 }
+// first visit: follow the phone or computer setting; after a click, remember the choice
 let savedTheme = null;
 try { savedTheme = localStorage.getItem('abcstatlab-theme'); } catch (_) {}
-setTheme(savedTheme === 'dark' ? 'dark' : 'light', false);
+const sysDark = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+setTheme(savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : (sysDark && sysDark.matches ? 'dark' : 'light'), false);
+if (sysDark && sysDark.addEventListener) sysDark.addEventListener('change', e => { let sv = null; try { sv = localStorage.getItem('abcstatlab-theme'); } catch (_) {} if (!sv) setTheme(e.matches ? 'dark' : 'light', false); });
+$('#themeBtn').addEventListener('click', () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true));
 
 const menuBtn = $('#menuBtn'), menu = $('#siteMenu');
 const siteUrl = () => (location.protocol.startsWith('http') ? location.origin + location.pathname : location.href.split('#')[0]);
@@ -2890,7 +2936,8 @@ const MODALS = {
       <li><b>Playground:</b> drag a dot, scroll over it to nudge it by 1, click empty space to add one, and double-click (or press Delete) to remove it.</li>
       <li><b>Stat tables:</b> choose z, t, χ² or F, then type a value to highlight its cell.</li>
       <li><b>Normal curve:</b> set μ and σ, pick an area type, then drag the round handles or type a and b.</li>
-      <li><b>⋮ menu (top right):</b> dark mode, sharing, and this help.</li>
+      <li><b>🌙 button (top right):</b> switches between light and dark mode.</li>
+      <li><b>⋮ menu (top right):</b> sharing, this help and About.</li>
     </ul>
     <p class="bn">সংখ্যা লিখে, ডট টেনে আর টেবিলে মান খুঁজে নিজে নিজে পরিসংখ্যান শিখুন।</p>`],
   about: ['About ABC Stat Lab', `
@@ -2918,8 +2965,7 @@ menu.addEventListener('click', async e => {
   const k = it.dataset.menu;
   if (k === 'facebook' || k === 'whatsapp') { closeMenu(false); return; }
   closeMenu(false);
-  if (k === 'theme') { setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true); menuBtn.focus(); }
-  else if (k === 'copy') {
+  if (k === 'copy') {
     try { await navigator.clipboard.writeText(siteUrl()); toast('Link copied'); }
     catch (_) { toast('Copying is blocked here. Copy the address from your browser bar.'); }
   }
