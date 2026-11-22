@@ -96,7 +96,13 @@ a{color:var(--accent)}
 .main-tabs a[aria-current="page"]{color:var(--accent);border-bottom-color:var(--accent)}
 .main-tabs .sh{display:none}
 @media (max-width:520px){.main-tabs .lg{display:none}.main-tabs .sh{display:inline}.main-tabs{justify-content:space-between;gap:0}.main-tabs a{padding:9px 6px 8px;gap:5px;font-size:13px}}
-@media (max-width:400px){.main-tabs a svg{display:none}.main-tabs a{padding:9px 5px 8px}}
+@media (max-width:400px){.main-tabs a svg:not(.caret){display:none}.main-tabs a{padding:9px 5px 8px}}
+.h2-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}
+.h2-row .sub-tabs{flex:none;position:relative;z-index:1}
+.sub-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.sub-tabs button{font:inherit;font-size:13.5px;font-weight:600;padding:5px 13px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer;white-space:nowrap}
+.sub-tabs button:hover{color:var(--ink);border-color:var(--accent)}
+.sub-tabs button[aria-current="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .drawer-label{margin:4px 12px 2px;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 @media (max-width:640px){.main-tabs{margin:6px -12px -8px;padding:0 12px}.main-tabs a{font-size:13.5px;padding:9px 9px 8px}}
 /* type */
@@ -393,6 +399,7 @@ details.steps[open] .when-closed{display:none}
 
 /* tables */
 .tabbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tabbar[hidden]{display:none}
 .table-head{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:16px;align-items:center;margin-bottom:12px}
 @media (max-width:700px){.table-head{grid-template-columns:1fr}}
 .table-head svg{width:100%;height:auto;display:block}
@@ -519,7 +526,7 @@ footer p{margin:4px 0;max-width:90ch}
     <a href="#calculator" data-view="calculator"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="6" width="10" height="4" rx="1" fill="currentColor" opacity=".35"/><circle cx="8.5" cy="14" r="1.2" fill="currentColor"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/><circle cx="15.5" cy="14" r="1.2" fill="currentColor"/><circle cx="8.5" cy="17.6" r="1.2" fill="currentColor"/><circle cx="12" cy="17.6" r="1.2" fill="currentColor"/><circle cx="15.5" cy="17.6" r="1.2" fill="currentColor"/></svg><span class="lg">Descriptive statistics</span><span class="sh">Descriptive</span></a>
     <a href="#tests" data-view="tests"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 18c4 0 5-11 10-11s6 11 10 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17.5 12.5V18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2 18.5h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="lg">Hypothesis tests</span><span class="sh">Tests</span></a>
     <a href="#regression" data-view="regression"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M3 20V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5 17L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="13" r="1.5" fill="currentColor"/><circle cx="11" cy="14" r="1.5" fill="currentColor"/><circle cx="13" cy="9" r="1.5" fill="currentColor"/><circle cx="17" cy="9.5" r="1.5" fill="currentColor"/></svg><span class="lg">Correlation &amp; regression</span><span class="sh">Regression</span></a>
-    <a href="#tables" data-view="tables"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9.5h18M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.6"/></svg><span class="lg">Stat tables</span><span class="sh">Tables</span></a>
+    <a href="#tables" data-view="tables" id="tablesTab"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9.5h18M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.6"/></svg><span class="lg">Stat tables</span><span class="sh">Tables</span></a>
   </nav>
 </header>
 <div class="drawer-back" id="drawerBack"></div>
@@ -817,13 +824,19 @@ footer p{margin:4px 0;max-width:90ch}
   <section id="tables" class="wrap section view" aria-labelledby="tb-h">
     <div class="section-head">
       <div>
-        <h2 id="tb-h">Statistical tables</h2>
+        <div class="h2-row"><h2 id="tb-h">Statistical tables</h2>
+          <nav class="sub-tabs" id="tableSubTabs" aria-label="Choose a table">
+            <button type="button" data-pick-table="z">z table</button>
+            <button type="button" data-pick-table="t">t table</button>
+            <button type="button" data-pick-table="c">χ² table</button>
+            <button type="button" data-pick-table="f">F table</button>
+          </nav></div>
         <p>Standard normal (z), Student's t, chi-square and F tables, calculated in your browser. Hover any cell to trace its row and column, or look a value up directly.</p>
       </div>
       <p class="bn">z, t, কাই-বর্গ (χ²) ও F টেবিল, সরাসরি মান খুঁজে নেওয়ার সুবিধাসহ।</p>
     </div>
     <div class="bench">
-      <div class="tabbar" role="tablist" aria-label="Choose a table">
+      <div class="tabbar" role="tablist" aria-label="Choose a table" hidden>
         <button class="btn" role="tab" id="tab-z" aria-selected="true" aria-controls="panel-z" data-tab="z">z table</button>
         <button class="btn" role="tab" id="tab-t" aria-selected="false" aria-controls="panel-t" data-tab="t">t table</button>
         <button class="btn" role="tab" id="tab-c" aria-selected="false" aria-controls="panel-c" data-tab="c">χ² table</button>
@@ -896,7 +909,7 @@ footer p{margin:4px 0;max-width:90ch}
         <div class="table-head">
           <div>
             <h3>F table: critical values</h3>
-            <p class="sub" style="margin-top:4px">Columns are the numerator degrees of freedom (df₁), rows the denominator (df₂). Each value has area α to its right. In one-way ANOVA, df₁ = groups − 1 and df₂ = total observations − groups; reject H₀ if your F is larger than the table value.</p>
+            <p class="sub" style="margin-top:4px">Columns are the numerator degrees of freedom (df₁), rows the denominator (df₂). Each value has area α to its right.</p>
           </div>
           <svg id="fMini" viewBox="0 0 230 92" role="img" aria-label="Shaded right-tail area alpha under an F curve"></svg>
         </div>
@@ -2276,6 +2289,7 @@ function buildMinis() {
 }
 $$('[data-tab]').forEach(b => b.addEventListener('click', () => {
   $$('[data-tab]').forEach(x => { const on = x === b; x.setAttribute('aria-selected', String(on)); $('#panel-' + x.dataset.tab).hidden = !on; });
+  if (typeof syncSubTabs === 'function') syncSubTabs();
 }));
 $$('[data-zsign]').forEach(b => b.addEventListener('click', () => { zSign = b.dataset.zsign; const zi = $('#zIn'), v = parseFloat(zi.value); if (Number.isFinite(v) && (v < 0) !== (zSign === 'neg')) zi.value = String(-v); buildZ(); zLookup(false); }));
 $$('[data-zmode]').forEach(b => b.addEventListener('click', () => { zMode = b.dataset.zmode; buildZ(); zLookup(true); }));
@@ -2862,6 +2876,7 @@ function showView(id) {
     else if (id === 'normal') neRender();
     else if (id === 'tests') htRun();
     else if (id === 'regression') rgPlot();
+    syncSubTabs();
   });
 }
 function goTo(id) {
@@ -2887,6 +2902,18 @@ drawer.addEventListener('click', e => { const a = e.target.closest('a[data-view]
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(true); });
 window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
 
+
+/* Stat tables: a second row of tabs (z, t, χ², F) under the main tabs, shown on the tables page */
+const subTabs = $('#tableSubTabs');
+function syncSubTabs() {
+  $$('[data-pick-table]', subTabs).forEach(b => b.setAttribute('aria-current', String($('#tab-' + b.dataset.pickTable).getAttribute('aria-selected') === 'true')));
+}
+
+subTabs.addEventListener('click', e => {
+  const b = e.target.closest('[data-pick-table]'); if (!b) return;
+  $('#tab-' + b.dataset.pickTable).click();
+  syncSubTabs();
+});
 /* ================= Theme (light by default) + ⋮ menu ================= */
 function setTheme(t, save) {
   document.documentElement.setAttribute('data-theme', t);
@@ -2934,7 +2961,7 @@ const MODALS = {
       <li><b>Hypothesis tests:</b> pick a test, enter raw data or summary statistics, and choose H₁ and α to get the test statistic, p-value, critical value and rejection region.</li>
       <li><b>Concepts:</b> each card's button opens the idea in the matching tool.</li>
       <li><b>Playground:</b> drag a dot, scroll over it to nudge it by 1, click empty space to add one, and double-click (or press Delete) to remove it.</li>
-      <li><b>Stat tables:</b> choose z, t, χ² or F, then type a value to highlight its cell.</li>
+      <li><b>Stat tables:</b> open the Stat tables tab, pick z, t, χ² or F next to the heading, then type a value to highlight its cell.</li>
       <li><b>Normal curve:</b> set μ and σ, pick an area type, then drag the round points on the axis or type a and b.</li>
       <li><b>🌙 button (top right):</b> switches between light and dark mode.</li>
       <li><b>⋮ menu (top right):</b> sharing, this help and About.</li>
