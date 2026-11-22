@@ -2195,6 +2195,11 @@ function tLookup(scroll = true) {
   const a1 = +sel.value;
   if (!(df >= 1)) { out.textContent = 'Degrees of freedom must be a whole number of 1 or more.'; markHit($('#tTable'), $('#tWrap'), null); return; }
   const v = D.tInv(1 - a1, df);
+  { // small curve: one tail or both tails shaded at the critical value
+    const L = Math.min(8, Math.max(4.5, v + 1.2)), pdf = Number.isFinite(df) ? x => D.tPdf(x, df) : D.phi, vt = v.toFixed(3);
+    if (tails === 2) miniCurve($('#tMini'), pdf, -L, L, [[-L, -v], [v, L]], null, [[-v, '−' + vt], [0, '0'], [v, vt]]);
+    else miniCurve($('#tMini'), pdf, -L, L, v, L, [[0, '0'], [v, 't = ' + vt]]);
+  }
   const ri = T_DF.indexOf(df), ci = T_A1.indexOf(a1);
   const desc = tails === 2 ? `two-tail α = ${+(2 * a1).toPrecision(3)} (${+((1 - 2 * a1) * 100).toPrecision(4)}% confidence)` : `one-tail α = ${a1}`;
   out.innerHTML = `<b>t<sub>${+a1.toPrecision(3)}, ${df}</sub> = ${v.toFixed(4)}</b> &nbsp;(df = ${df}, ${tails === 2 ? 'two-tailed α = ' + +(2 * a1).toPrecision(3) : 'one-tailed α = ' + a1})` + (ri < 0 ? ` &nbsp;·&nbsp; df ${df} is not a table row, so this value was computed exactly` : '');
@@ -2218,6 +2223,8 @@ function cLookup(scroll = true) {
   const out = $('#cOut');
   if (!(df >= 1)) { out.textContent = 'Degrees of freedom must be a whole number of 1 or more.'; markHit($('#cTable'), $('#cWrap'), null); return; }
   const v = D.chi2Inv(1 - a, df);
+  { const x1 = Math.max(D.chi2Inv(0.999, df), v * 1.15), x0 = df <= 2 ? x1 * 0.015 : 0.001;
+    miniCurve($('#cMini'), x => D.chi2Pdf(x, df), x0, x1, v, x1, [[x0 + (x1 - x0) * 0.04, '0'], [v, 'χ² = ' + (v < 0.01 ? v.toPrecision(3) : v.toFixed(3))]]); }
   const ri = C_DF.indexOf(df), ci = C_A.indexOf(a);
   out.innerHTML = `<b>χ²<sub>${a}, ${df}</sub> = ${v < 0.01 ? v.toPrecision(4) : v.toFixed(4)}</b> &nbsp;(df = ${df}, area α = ${a} to the right)` + (ri < 0 ? ` &nbsp;·&nbsp; df ${df} is not a table row, so this value was computed exactly` : '');
   const cell = ri >= 0 ? $(`#cTable td[data-r="${ri}"][data-c="${ci}"]`) : null;
@@ -2247,6 +2254,8 @@ function fLookup(scroll = true) {
   buildF(a);
   if (!(d1 >= 1) || !(d2 >= 1)) { out.textContent = 'Both degrees of freedom must be whole numbers of 1 or more.'; markHit($('#fTable'), $('#fWrap'), null); return; }
   const v = D.fInv(1 - a, d1, d2);
+  { const x1 = Math.min(60, Math.max(D.fInv(0.99, d1, d2), v * 1.3)), x0 = d1 <= 2 ? x1 * 0.012 : 0.001;
+    miniCurve($('#fMini'), x => D.fPdf(x, d1, d2), x0, x1, Math.min(v, x1), x1, [[x0 + (x1 - x0) * 0.04, '0'], [Math.min(v, x1), 'F = ' + v.toFixed(3)]]); }
   const ri = F_D2.indexOf(d2), ci = F_D1.indexOf(d1);
   out.innerHTML = `<b>F<sub>${a}</sub>(${d1}, ${d2}) = ${v.toFixed(4)}</b> &nbsp;(df₁ = ${d1}, df₂ = ${d2}, area α = ${a} to the right)` + (ri < 0 || ci < 0 ? ` &nbsp;·&nbsp; this df is not a table row or column, so the value was computed exactly` : '');
   const cell = ri >= 0 && ci >= 0 ? $(`#fTable td[data-r="${ri}"][data-c="${ci}"]`) : null;
