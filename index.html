@@ -7,7 +7,7 @@
 <title>ABC Stat Lab</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Hind+Siliguri:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Layout: one long lab page on graph paper; every tool sits on its own bench. Colour code is fixed site-wide: mean = orange, median = teal, mode = violet, spread = blue. */
@@ -70,7 +70,10 @@ a{color:var(--accent)}
 .icon-btn{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer}
 .icon-btn:hover,.icon-btn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
 .menu{position:absolute;right:0;top:calc(100% + 8px);min-width:250px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;box-shadow:0 18px 40px -16px rgba(15,25,50,.35),0 2px 6px rgba(15,25,50,.08);z-index:40}
+.menu{max-height:calc(100vh - 90px);overflow-y:auto}
 .menu[hidden]{display:none}
+.menu-item[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.menu-item[aria-current="page"] svg{color:var(--accent)}
 .menu-item{display:flex;align-items:center;gap:11px;width:100%;padding:9px 10px;border:0;border-radius:8px;background:transparent;color:var(--ink);font:inherit;font-size:14.5px;text-align:left;cursor:pointer;text-decoration:none}
 .menu-item:hover,.menu-item:focus-visible{background:var(--surface-2);outline:none}
 .menu-item svg{flex:none;color:var(--muted)}
@@ -478,76 +481,49 @@ footer p{margin:4px 0;max-width:90ch}
 </head>
 <body>
 <header class="topbar">
-  <button class="icon-btn" id="drawerBtn" type="button" aria-label="Open the Learn menu" aria-expanded="false" aria-controls="drawer">
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-  </button>
-  <a class="brand" href="#calculator" aria-label="ABC Stat Lab home (calculator)" title="Home: descriptive statistics calculator">
+  <a class="brand" href="#tables" aria-label="ABC Stat Lab home (Statistical Tables)" title="Home: Statistical Tables">
     <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="6" fill="var(--ink)"/><circle cx="8" cy="16" r="2.4" fill="var(--surface)"/><circle cx="13" cy="16" r="2.4" fill="var(--surface)"/><circle cx="13" cy="10.6" r="2.4" fill="var(--surface)"/><circle cx="18.5" cy="16" r="2.4" fill="var(--surface)"/><path d="M13 19.5 l-3 3.5 h6z" fill="var(--mean)"/></svg>
     ABC Stat Lab
   </a>
-  <span class="crumb tagline-bn">পরিসংখ্যানের হাতেখড়ি</span>
   <span class="crumb tagline">Hope you’ll love statistics</span>
   <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Dark mode">
     <svg class="i-moon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
     <svg class="i-sun" width="19" height="19" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
   </button>
   <div class="menu-wrap">
-    <button class="icon-btn" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="More options">
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>
+    <button class="icon-btn" id="menuBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="siteMenu" aria-label="Menu" title="Menu">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
     </button>
-    <div class="menu" id="siteMenu" role="menu" aria-label="More options" hidden>
+    <div class="menu" id="siteMenu" role="menu" aria-label="Menu" hidden>
+      <div class="menu-label">Learn</div>
+      <a class="menu-item" role="menuitem" data-menu="view" data-view="concepts" href="#concepts">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 19.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Concepts
+      </a>
+      <a class="menu-item" role="menuitem" data-menu="view" data-view="playground" href="#playground">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="15" r="2" fill="currentColor"/><circle cx="12" cy="15" r="2" fill="currentColor"/><circle cx="12" cy="10" r="2" fill="currentColor"/><circle cx="18" cy="15" r="2" fill="currentColor"/><path d="M12 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Playground
+      </a>
+      <a class="menu-item" role="menuitem" data-menu="view" data-view="normal" href="#normal">
+        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 19c5 0 6-13 10-13s5 13 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2 19.5h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Normal curve
+      </a>
+      <div class="menu-sep"></div>
       <div class="menu-label">Share</div>
       <button class="menu-item" role="menuitem" type="button" data-menu="copy">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         Copy site link
       </button>
-      <a class="menu-item" role="menuitem" data-menu="facebook" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h3l1-4h-4V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
-        Share on Facebook
-      </a>
       <a class="menu-item" role="menuitem" data-menu="whatsapp" href="https://wa.me/" target="_blank" rel="noopener noreferrer">
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 9.5c.3 2 2.2 4.2 4.5 4.8l1.2-1.1 1.6.8-.4 1.4c-3.5.5-7.3-3.4-7-6.9l1.4-.4.8 1.6z" fill="currentColor"/></svg>
         Share on WhatsApp
       </a>
-      <div class="menu-sep"></div>
-      <button class="menu-item" role="menuitem" type="button" data-menu="help">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.6v.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17" r="1.2" fill="currentColor"/></svg>
-        How to use
-      </button>
-      <button class="menu-item" role="menuitem" type="button" data-menu="about">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="7.5" r="1.2" fill="currentColor"/></svg>
-        About ABC Stat Lab
-      </button>
-      <button class="menu-item" role="menuitem" type="button" data-menu="top">
-        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Back to top
-      </button>
     </div>
   </div>
   <nav class="main-tabs" aria-label="Tools">
-    <a href="#calculator" data-view="calculator"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="7" y="6" width="10" height="4" rx="1" fill="currentColor" opacity=".35"/><circle cx="8.5" cy="14" r="1.2" fill="currentColor"/><circle cx="12" cy="14" r="1.2" fill="currentColor"/><circle cx="15.5" cy="14" r="1.2" fill="currentColor"/><circle cx="8.5" cy="17.6" r="1.2" fill="currentColor"/><circle cx="12" cy="17.6" r="1.2" fill="currentColor"/><circle cx="15.5" cy="17.6" r="1.2" fill="currentColor"/></svg><span class="lg">Descriptive statistics</span><span class="sh">Descriptive</span></a>
-    <a href="#tests" data-view="tests"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 18c4 0 5-11 10-11s6 11 10 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17.5 12.5V18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2 18.5h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span class="lg">Hypothesis tests</span><span class="sh">Tests</span></a>
-    <a href="#regression" data-view="regression"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M3 20V4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M5 17L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="13" r="1.5" fill="currentColor"/><circle cx="11" cy="14" r="1.5" fill="currentColor"/><circle cx="13" cy="9" r="1.5" fill="currentColor"/><circle cx="17" cy="9.5" r="1.5" fill="currentColor"/></svg><span class="lg">Correlation &amp; regression</span><span class="sh">Regression</span></a>
-    <a href="#tables" data-view="tables" id="tablesTab"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9.5h18M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.6"/></svg><span class="lg">Stat tables</span><span class="sh">Tables</span></a>
+    <a href="#tables" data-view="tables" id="tablesTab"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9.5h18M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.6"/></svg><span class="lg">Statistical Tables</span><span class="sh">Statistical Tables</span></a>
   </nav>
 </header>
-<div class="drawer-back" id="drawerBack"></div>
-<aside class="drawer" id="drawer" aria-label="Learn" aria-hidden="true">
-  <div class="drawer-head">
-    <span class="brand" style="font-size:18px">ABC Stat Lab</span>
-    <button class="icon-btn" id="drawerClose" type="button" aria-label="Close menu">
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-  <nav aria-label="Learn">
-      <p class="drawer-label">Learn</p>
-      <a href="#concepts" data-view="concepts"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9.5 19.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span><span class="t">Concepts</span><span class="d">Key ideas with formulas and examples</span></span></a>
-      <a href="#playground" data-view="playground"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="7" cy="15" r="2" fill="currentColor"/><circle cx="12" cy="15" r="2" fill="currentColor"/><circle cx="12" cy="10" r="2" fill="currentColor"/><circle cx="18" cy="15" r="2" fill="currentColor"/><path d="M12 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span><span class="t">Playground</span><span class="d">Drag points and watch the mean and median move</span></span></a>
-      <a href="#normal" data-view="normal"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 19c5 0 6-13 10-13s5 13 10 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M2 19.5h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span><span class="t">Normal curve</span><span class="d">Areas, z-scores and percentiles</span></span></a>
-      <a href="#videos" data-view="videos"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9v6l5-3z" fill="currentColor"/></svg><span><span class="t">Videos</span><span class="d">Hand-picked video lessons</span></span></a>
-  </nav>
-  <div class="drawer-foot">পরিসংখ্যানের হাতেখড়ি</div>
-</aside>
 
 <main id="top">
   <p class="sr-only" id="noJs"></p>
@@ -558,7 +534,6 @@ footer p{margin:4px 0;max-width:90ch}
         <h2 id="pg-h">Mean and median playground</h2>
         <p>Sixteen test scores out of 100. Drag the far-right score toward 100 and watch the mean chase it while the median barely moves.</p>
       </div>
-      <p class="bn">ডান দিকের ডটটি টেনে দেখুন: গড় সরে যায়, কিন্তু মধ্যক প্রায় একই থাকে।</p>
     </div>
     <div class="bench">
       <div class="pg-top">
@@ -576,7 +551,6 @@ footer p{margin:4px 0;max-width:90ch}
           <button class="btn small" id="pgAddOutlier">Add a 98</button>
           <button class="btn small" id="pgRemove" disabled>Remove selected</button>
           <button class="btn small" id="pgClear">Clear</button>
-          <button class="btn small" id="pgToCalc">Send to calculator</button>
         </div>
       </div>
       <div class="plot" id="pgWrap"><svg id="pgSvg" role="group" aria-label="Dot plot of the data. Each dot is a slider; use arrow keys to move the focused dot."></svg></div>
@@ -602,178 +576,6 @@ footer p{margin:4px 0;max-width:90ch}
     </div>
   </section>
 
-  <!-- CALCULATOR -->
-  <section id="calculator" class="wrap section view" aria-labelledby="calc-h">
-    <div class="section-head">
-      <div>
-        <h2 id="calc-h">Descriptive statistics calculator</h2>
-        <p><b style="color:var(--ink);font-weight:600">Type or paste numbers separated by spaces, commas or new lines, or upload an Excel / CSV file.</b> Every result updates as you type, with the working shown step by step.</p>
-      </div>
-      <p class="bn">সংখ্যাগুলো লিখুন বা পেস্ট করুন, সব ফলাফল সাথে সাথে দেখাবে।</p>
-    </div>
-    <div class="bench">
-      <div class="calc-grid">
-        <div class="calc-in">
-          <div class="data-box">
-            <div class="data-head">
-              <label for="calcInput" class="data-title">Your data</label>
-              <span class="count-badge" id="calcCount" aria-live="polite"></span>
-            </div>
-            <div class="drop-zone" id="calcDrop">
-              <textarea id="calcInput" spellcheck="false" placeholder="Type or paste your numbers here">12, 15, 15, 18, 21, 22, 22, 22, 25, 29, 31, 48</textarea>
-              <div class="drop-msg" aria-hidden="true">Drop the Excel or CSV file to load its numbers</div>
-            </div>
-            <div class="row data-tools">
-              <button class="btn small" type="button" id="calcRandom" title="20 random values around 50"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8.5" cy="8.5" r="1.6" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></svg>Random</button>
-              <button class="btn small" type="button" id="calcSort"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M3 16l4 4 4-4M14 6h7M14 12h5M14 18h3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Sort</button>
-              <button class="btn small" type="button" id="calcUpload"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Upload file</button>
-              <input type="file" id="calcFile" accept=".xlsx,.xls,.ods,.csv,.txt,.tsv" hidden>
-              <button class="btn small" type="button" id="calcClear"><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Clear</span></button>
-            </div>
-          </div>
-          <div class="row spread">
-            <div class="seg" role="group" aria-label="Formula type">
-              <button type="button" data-calcmode="sample" aria-pressed="true">Sample (n − 1)</button>
-              <button type="button" data-calcmode="population" aria-pressed="false">Population (N)</button>
-            </div>
-            <div class="row">
-              <button class="btn small" id="calcCopy">Copy results</button>
-              <button class="btn small" id="calcToPg">Open in playground</button>
-            </div>
-          </div>
-          <p class="status" id="calcStatus" aria-live="polite"></p>
-          <div>
-            <p class="panel-title">Histogram with frequency curve and box plot</p>
-            <div class="legend chart-key" aria-hidden="true">
-              <span><i class="k-bar"></i>Frequency (bars)</span>
-              <span><i class="k-curve"></i>Frequency curve</span>
-              <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle class="bx-out" cx="6" cy="6" r="4" style="stroke-width:2.2;fill:color-mix(in srgb,var(--out) 24%,var(--surface))"/></svg>Outlier (value shown)</span>
-            </div>
-            <div class="plot" id="calcChart"><svg id="calcSvg" role="img" aria-label="Histogram of your data with a frequency curve, mean and median lines, and a box plot with outliers labelled"></svg></div>
-          </div>
-        </div>
-        <div>
-          <details class="pick" id="statPick">
-            <summary><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Choose which results to show <span class="pick-count" id="pickCount"></span></summary>
-            <div class="pick-body">
-              <div class="row" style="margin-bottom:10px">
-                <span class="group-label">Quick pick</span>
-                <button class="btn small" type="button" data-pickset="default">Default</button>
-                <button class="btn small" type="button" data-pickset="all">All</button>
-                <button class="btn small" type="button" data-pickset="loc">Location</button>
-                <button class="btn small" type="button" data-pickset="var">Dispersion</button>
-                <button class="btn small" type="button" data-pickset="shape">Shape</button>
-                <button class="btn small" type="button" data-pickset="none">None</button>
-              </div>
-              <div class="pick-groups" id="pickGrid"></div>
-            </div>
-          </details>
-          <div class="res-list" id="calcTiles"></div>
-        </div>
-      </div>
-      <div class="split">
-        <div>
-          <details class="steps" id="freqBox">
-            <summary><span class="when-closed">Show frequency table</span><span class="when-open">Hide frequency table</span></summary>
-            <div class="inner"><div class="scroll-x"><table class="mini-table" id="freqTable"></table></div></div>
-          </details>
-        </div>
-        <div>
-          <details class="steps" id="calcSteps">
-            <summary><span class="when-closed">Show the working for the mean and standard deviation</span><span class="when-open">Hide the working for the mean and standard deviation</span></summary>
-            <div class="inner">
-              <div class="scroll-x"><table class="mini-table" id="stepTable"></table></div>
-              <div class="working" id="stepWorking"></div>
-            </div>
-          </details>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- HYPOTHESIS TESTS -->
-  <section id="tests" class="wrap section view" aria-labelledby="ht-h">
-    <div class="section-head">
-      <div>
-        <h2 id="ht-h">Hypothesis tests</h2>
-        <p><b style="color:var(--ink);font-weight:600">Choose a test, enter raw data or summary statistics, then set H₁ and α.</b> You get the test statistic, p-value and critical value, with the rejection region shown on the curve.</p>
-      </div>
-      <p class="bn">পরীক্ষা বেছে নিন, ডেটা দিন, সাথে সাথে সিদ্ধান্ত দেখুন।</p>
-    </div>
-    <div class="bench">
-      <div class="ht-pick" id="htPick" role="group" aria-label="Choose a test"></div>
-      <div class="ht-grid">
-        <div class="data-box ht-in">
-          <div class="data-head">
-            <span class="data-title" id="htTitle"></span>
-            <div class="seg" id="htMode" role="group" aria-label="Input type">
-              <button type="button" data-htmode="raw" aria-pressed="true">Raw data</button>
-              <button type="button" data-htmode="summary" aria-pressed="false">Summary</button>
-            </div>
-          </div>
-          <div class="ht-form" id="htForm"></div>
-          <div class="ht-set">
-            <div class="field" id="htAltWrap">
-              <span>Alternative hypothesis H₁</span>
-              <div class="seg" id="htAlt" role="group" aria-label="Alternative hypothesis">
-                <button type="button" data-htalt="two" aria-pressed="true">Two-tailed (≠)</button>
-                <button type="button" data-htalt="right" aria-pressed="false">Right-tailed (&gt;)</button>
-                <button type="button" data-htalt="left" aria-pressed="false">Left-tailed (&lt;)</button>
-              </div>
-            </div>
-            <label class="field" for="htAlpha">Significance level α
-              <select id="htAlpha"><option value="0.1">0.10</option><option value="0.05" selected>0.05</option><option value="0.01">0.01</option></select>
-            </label>
-          </div>
-          <p class="status err" id="htErr" aria-live="polite"></p>
-        </div>
-        <div class="ht-out" id="htOut" aria-live="polite">
-          <div class="res-list" id="htTiles"></div>
-          <div class="plot" id="htPlotWrap"><svg id="htSvg" role="img" aria-label="Sampling distribution with the rejection region shaded and the test statistic marked"></svg></div>
-          <div id="htTable"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CORRELATION AND REGRESSION -->
-  <section id="regression" class="wrap section view" aria-labelledby="rg-h">
-    <div class="section-head">
-      <div>
-        <h2 id="rg-h">Correlation and regression</h2>
-        <p><b style="color:var(--ink);font-weight:600">Enter paired X and Y values in the same order, or paste two columns from Excel into the X box.</b> Results and the scatter plot update as you type.</p>
-      </div>
-      <p class="bn">X ও Y-এর জোড়া মান দিন, সাথে সাথে r ও regression line দেখুন।</p>
-    </div>
-    <div class="bench">
-      <div class="calc-grid">
-        <div class="data-box">
-          <div class="data-head">
-            <span class="data-title">Your data</span>
-            <span class="count-badge" id="rgCount" aria-live="polite"></span>
-          </div>
-          <div class="rg-xy">
-            <label class="field" for="rgX">X (independent variable)
-              <textarea id="rgX" spellcheck="false" rows="3">0 20 40 60 80 100 120</textarea>
-            </label>
-            <label class="field" for="rgY">Y (dependent variable)
-              <textarea id="rgY" spellcheck="false" rows="3">3.2 3.9 3.6 4.7 4.3 5.4 4.9</textarea>
-            </label>
-          </div>
-          <label class="field rg-pred" for="rgX0">Predict ŷ at x =
-            <input type="number" step="any" id="rgX0" value="70">
-          </label>
-          <label class="chip rg-opt"><input type="checkbox" id="rgXonY"><span style="color:var(--ink)">Also show X on Y</span></label>
-          <p class="status err" id="rgErr" aria-live="polite"></p>
-        </div>
-        <div class="ht-out">
-          <div class="res-list" id="rgTiles"></div>
-          <div class="plot" id="rgWrap"><svg id="rgSvg" role="img" aria-label="Scatter plot of Y against X with the two regression lines"></svg></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- NORMAL -->
   <section id="normal" class="wrap section view" aria-labelledby="ne-h">
     <div class="section-head">
@@ -781,7 +583,6 @@ footer p{margin:4px 0;max-width:90ch}
         <h2 id="ne-h">Normal curve explorer</h2>
         <p>Set the mean μ and standard deviation σ, then drag the round points on the axis or type a and b to find the probability for any range.</p>
       </div>
-      <p class="bn">μ ও σ বসান, তারপর অক্ষের বিন্দু টেনে দেখুন কোনো সীমার মধ্যে মান পড়ার সম্ভাবনা কত।</p>
     </div>
     <div class="bench">
       <div class="ne-grid">
@@ -827,7 +628,7 @@ footer p{margin:4px 0;max-width:90ch}
   <section id="tables" class="wrap section view" aria-labelledby="tb-h">
     <div class="section-head">
       <div>
-        <div class="h2-row"><h2 id="tb-h">Statistical tables</h2>
+        <div class="h2-row"><h2 id="tb-h">Statistical Tables</h2>
           <nav class="sub-tabs" id="tableSubTabs" aria-label="Choose a table">
             <button type="button" data-pick-table="z">z table</button>
             <button type="button" data-pick-table="t">t table</button>
@@ -836,7 +637,6 @@ footer p{margin:4px 0;max-width:90ch}
           </nav></div>
         <p>Standard normal (z), Student's t, chi-square and F tables, calculated in your browser. Hover any cell to trace its row and column, or look a value up directly.</p>
       </div>
-      <p class="bn">z, t, কাই-বর্গ (χ²) ও F টেবিল, সরাসরি মান খুঁজে নেওয়ার সুবিধাসহ।</p>
     </div>
     <div class="bench">
       <div class="tabbar" role="tablist" aria-label="Choose a table" hidden>
@@ -929,26 +729,13 @@ footer p{margin:4px 0;max-width:90ch}
     </div>
   </section>
 
-  <!-- VIDEOS -->
-  <section id="videos" class="wrap section view" aria-labelledby="vd-h">
-    <div class="section-head">
-      <div>
-        <h2 id="vd-h">Video lessons</h2>
-        <p>Hand-picked explainers from Khan Academy, CrashCourse, StatQuest and others. Each one opens in a new tab.</p>
-      </div>
-      <p class="bn">ভালো মানের ইংরেজি ভিডিও, বিষয় অনুযায়ী সাজানো।</p>
-    </div>
-    <div id="videoGroups"></div>
-  </section>
-
   <!-- CONCEPTS -->
   <section id="concepts" class="wrap section view" aria-labelledby="cc-h">
     <div class="section-head">
       <div>
         <h2 id="cc-h">Key concepts</h2>
-        <p>Each idea in plain words, with its formula, a worked example, the Bangla term, and a button that opens it in the matching tool.</p>
+        <p>Each idea in plain words, with its formula, a worked example and a button that opens it in the matching tool.</p>
       </div>
-      <p class="bn">প্রতিটি ধারণা সহজ ভাষায়, সূত্র ও উদাহরণসহ।</p>
     </div>
     <div class="concepts" id="conceptGrid"></div>
   </section>
@@ -963,21 +750,6 @@ footer p{margin:4px 0;max-width:90ch}
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
-<footer>
-  <div class="wrap">
-    <div class="credit">
-      <a class="avatar" href="https://www.linkedin.com/in/md-fakhrulhasan/" target="_blank" rel="noopener noreferrer" title="View LinkedIn profile" aria-label="Md. Fakhrul Hasan on LinkedIn">
-        <img src="data:image/jpeg;base64,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" alt="Md. Fakhrul Hasan" width="56" height="56">
-        <span class="li" aria-hidden="true">in</span>
-      </a>
-      <div>
-        <div class="who">Developed by <b>Md. Fakhrul Hasan</b></div>
-        <div class="role">Assistant Professor, Bangladesh Agricultural University (BAU)</div>
-      </div>
-    </div>
-    <p class="copy">Copyright © 2026 Md. Fakhrul Hasan</p>
-  </div>
-</footer>
 
 <script>
 (() => {
@@ -1540,415 +1312,6 @@ $$('[data-opt]').forEach(cb => cb.addEventListener('change', () => {
 $('#pgAddOutlier').addEventListener('click', () => { const p = { id: pg.nid++, v: 98 }; pg.pts.push(p); pg.sel = p.id; $$('[data-preset]').forEach(b => b.setAttribute('aria-pressed', 'false')); pgUpdate(); });
 $('#pgRemove').addEventListener('click', () => { if (pg.sel != null) pgRemove(pg.sel); });
 $('#pgClear').addEventListener('click', () => { pg.pts = []; pg.sel = null; $$('[data-preset]').forEach(b => b.setAttribute('aria-pressed', 'false')); pgUpdate(); });
-$('#pgToCalc').addEventListener('click', () => {
-  $('#calcInput').value = pg.pts.map(p => p.v).sort((a, b) => a - b).join(', ');
-  calcRun();
-  goTo('calculator');
-});
-
-/* ================= Calculator ================= */
-let calcSample = true;
-const calcIn = $('#calcInput');
-function parseData(text) {
-  const toks = text.split(/[\s,;]+/).filter(Boolean);
-  const vals = [], bad = [];
-  toks.forEach(t => { const v = Number(t); if (t !== '' && Number.isFinite(v)) vals.push(v); else bad.push(t); });
-  return { vals, bad };
-}
-function makeBins(s) {
-  const n = s.length, min = s[0], max = s[n - 1];
-  if (min === max) return { w: 1, bins: [{ lo: min - 0.5, hi: min + 0.5, c: n }] };
-  const k = Math.ceil(Math.log2(n)) + 1;
-  const w = niceStep((max - min) / k);
-  const start = Math.floor(min / w + 1e-9) * w;
-  const bins = [];
-  for (let i = 0; start + i * w <= max + 1e-9; i++) bins.push({ lo: start + i * w, hi: start + (i + 1) * w, c: 0 });
-  s.forEach(x => { let i = Math.floor((x - start) / w + 1e-9); i = clamp(i, 0, bins.length - 1); bins[i].c++; });
-  return { w, bins };
-}
-function describe(a, sample) {
-  const st = summarize(a);
-  const variance = S.variance(a, sample);
-  const sd = Math.sqrt(variance);
-  const sS = st.n > 1 ? Math.sqrt(S.variance(a, true)) : NaN;
-  return Object.assign(st, { sum: S.sum(a), variance, sdUsed: sd, se: sS / Math.sqrt(st.n), cv: st.mean !== 0 ? sd / Math.abs(st.mean) * 100 : NaN, skew: S.skewness(a, sample), kurt: S.kurtosis(a, sample), ...shapeMeasures(a, st, sd) });
-}
-// moment and quartile measures of shape, as taught in most textbooks
-function shapeMeasures(a, st, sd) {
-  const { n, m2, m3, m4 } = S.moments(a);
-  const ok = n >= 2 && m2 > 0;
-  const b1 = ok ? m3 * m3 / (m2 * m2 * m2) : NaN, b2 = ok ? m4 / (m2 * m2) : NaN;
-  const iqr = st.q3 - st.q1;
-  return {
-    b1, b2,
-    g1: ok ? m3 / Math.pow(m2, 1.5) : NaN,   // gamma1 = sqrt(beta1), with the sign of m3
-    g2: ok ? b2 - 3 : NaN,                   // gamma2 = beta2 - 3
-    pcs: n >= 2 && sd > 0 ? 3 * (st.mean - st.median) / sd : NaN,
-    bcs: n >= 2 && iqr > 0 ? (st.q3 + st.q1 - 2 * st.median) / iqr : NaN
-  };
-}
-let calcLast = null;
-let pctK = 90;
-try { const v = parseFloat(localStorage.getItem('abcstatlab-pct')); if (v > 0 && v < 100) pctK = v; } catch (_) {}
-const fmtK = k => String(+k.toFixed(2));
-const pctOf = (s, k) => S.percentile(s, k);
-const STATS = [
-  { k: 'n', label: s => 'Count (' + s.n + ')', val: d => String(d.n), copy: d => d.n, cls: '', g: 'basic' },
-  { k: 'sum', label: () => 'Sum (Σx)', val: d => fmt(d.sum, 4), copy: d => d.sum, cls: '', g: '' },
-  { k: 'mean', label: () => 'Mean', val: d => fmt(d.mean, 4), copy: d => fmt(d.mean, 6), cls: 'mean', g: 'basic center' },
-  { k: 'median', label: () => 'Median', val: d => fmt(d.median, 4), copy: d => fmt(d.median, 6), cls: 'median', g: 'basic center' },
-  { k: 'mode', label: () => 'Mode', val: d => d.modes.length ? d.modes.slice(0, 4).map(v => fmt(v, 4)).join(', ') + (d.modes.length > 4 ? '…' : '') + ` (×${d.modeCount})` : 'none', copy: d => d.modes.length ? d.modes.join(', ') : 'none', cls: 'mode', g: 'basic center' },
-  { k: 'min', label: () => 'Minimum', val: d => fmt(d.min, 4), copy: d => d.min, cls: '', g: 'basic' },
-  { k: 'max', label: () => 'Maximum', val: d => fmt(d.max, 4), copy: d => d.max, cls: '', g: 'basic' },
-  { k: 'range', label: () => 'Range', val: d => fmt(d.range, 4), copy: d => fmt(d.range, 6), cls: 'spread', g: 'basic spread' },
-  { k: 'var', label: s => 'Variance (' + s.v + ')', val: d => fmt(d.variance, 4), copy: d => fmt(d.variance, 6), cls: 'spread', g: 'basic spread' },
-  { k: 'sd', label: s => 'Std deviation (' + s.sd + ')', val: d => fmt(d.sdUsed, 4), copy: d => fmt(d.sdUsed, 6), cls: 'spread', g: 'basic spread' },
-  { k: 'se', label: () => 'Std error (s ÷ √n)', val: d => fmt(d.se, 4), copy: d => fmt(d.se, 6), cls: 'spread', g: 'spread' },
-  { k: 'q1', label: () => 'Q1', val: d => fmt(d.q1, 4), copy: d => fmt(d.q1, 6), cls: '', g: 'spread' },
-  { k: 'q3', label: () => 'Q3', val: d => fmt(d.q3, 4), copy: d => fmt(d.q3, 6), cls: '', g: 'spread' },
-  { k: 'pct', label: () => 'Percentile (Pₖ)', val: d => fmt(pctOf(d.s, pctK), 4), copy: d => fmt(pctOf(d.s, pctK), 6), cls: '', g: 'loc', copyLabel: () => 'P' + fmtK(pctK) },
-  { k: 'iqr', label: () => 'IQR', val: d => fmt(d.iqr, 4), copy: d => fmt(d.iqr, 6), cls: 'spread', g: 'spread' },
-  { k: 'cv', label: () => 'Coeff. of variation', tip: 'CV: coefficient of variation', val: d => Number.isFinite(d.cv) ? fmt(d.cv, 2) + '%' : '—', copy: d => Number.isFinite(d.cv) ? fmt(d.cv, 4) + '%' : '—', cls: '', g: 'spread' },
-  { k: 'skewm', label: () => 'Skewness', parts: d => [['β₁', d.b1, 'μ₃² ÷ μ₂³'], ['γ₁', d.g1, 'μ₃ ÷ μ₂<sup>3/2</sup>']], cls: 'mode', g: 'shape' },
-  { k: 'kurtm', label: () => 'Kurtosis', parts: d => [['β₂', d.b2, 'μ₄ ÷ μ₂²'], ['γ₂', d.g2, 'β₂ − 3']], cls: 'mode', g: 'shape' },
-  { k: 'pcs', label: () => "Pearson's coeff. of skewness", tip: "PCS: Pearson's coefficient of skewness", f: s => '3(' + (s.n === 'n' ? 'x̄' : 'μ') + ' − Md) ÷ ' + s.sd, val: d => fmt(d.pcs, 4), copy: d => fmt(d.pcs, 6), cls: 'mode', g: 'shape' },
-  { k: 'bcs', label: () => "Bowley's coeff. of skewness", tip: "BCS: Bowley's coefficient of skewness", f: () => '(Q₃ + Q₁ − 2Md) ÷ (Q₃ − Q₁)', val: d => fmt(d.bcs, 4), copy: d => fmt(d.bcs, 6), cls: 'mode', g: 'shape' },
-  { k: 'skew', label: s => s.n === 'n' ? 'Skewness G₁ (Excel SKEW)' : 'Skewness g₁', val: d => fmt(d.skew, 4), copy: d => fmt(d.skew, 6), cls: '', g: '' },
-  { k: 'kurt', label: s => s.n === 'n' ? 'Excess kurtosis G₂ (Excel KURT)' : 'Excess kurtosis g₂', val: d => fmt(d.kurt, 4), copy: d => fmt(d.kurt, 6), cls: '', g: '' },
-  { k: 'out', label: () => 'Outliers (1.5 IQR)', val: d => d.outliers.length ? d.outliers.slice(0, 6).map(v => fmt(v, 4)).join(', ') + (d.outliers.length > 6 ? '…' : '') : 'none', copy: d => d.outliers.length ? d.outliers.join(', ') : 'none', cls: '', g: '' }
-];
-const DEFAULT_STATS = ['mean', 'sd', 'cv', 'skewm', 'kurtm'];
-// result groups used by the picker and the quick-pick buttons
-const STAT_GROUPS = [
-  { g: 'loc', title: 'Measures of location', bn: 'অবস্থানের পরিমাপ', keys: ['mean', 'median', 'mode', 'q1', 'q3', 'pct'] },
-  { g: 'var', title: 'Measures of dispersion', bn: 'বিস্তারের পরিমাপ', keys: ['range', 'var', 'sd', 'se', 'iqr', 'cv'] },
-  { g: 'shape', title: 'Measures of shape', bn: 'আকৃতির পরিমাপ', keys: ['skewm', 'kurtm', 'pcs', 'bcs', 'skew', 'kurt'] },
-  { g: 'other', title: 'Other', bn: 'অন্যান্য', keys: ['n', 'sum', 'min', 'max', 'out'] }
-];
-STATS.forEach(x => { const G = STAT_GROUPS.find(G => G.keys.includes(x.k)); x.g = G ? G.g : 'other'; });
-const STAT_ORDER = STAT_GROUPS.flatMap(G => G.keys);
-STATS.sort((a, b) => STAT_ORDER.indexOf(a.k) - STAT_ORDER.indexOf(b.k));
-STATS.forEach(x => { if (x.parts) { x.val = d => x.parts(d).map(([k, v]) => `${k} = ${fmt(v, 4)}`).join(', '); x.copy = d => x.parts(d).map(([k, v]) => `${k} = ${fmt(v, 6)}`).join(', '); } });
-let statSel = new Set(DEFAULT_STATS);
-try { const saved = JSON.parse(localStorage.getItem('abcstatlab-calc-stats-v6') || 'null'); if (Array.isArray(saved)) statSel = new Set(saved.filter(k => STATS.some(x => x.k === k))); } catch (_) {}
-const calcSym = () => calcSample ? { v: 's²', sd: 's', n: 'n' } : { v: 'σ²', sd: 'σ', n: 'N' };
-function renderPicker() {
-  const sym = calcSym();
-  const item = x => `<label class="${statSel.has(x.k) ? 'on' : ''}"${x.tip ? ` title="${x.tip}"` : ''}><input type="checkbox" data-stat="${x.k}"${statSel.has(x.k) ? ' checked' : ''}>${x.label(sym)}</label>`;
-  $('#pickGrid').innerHTML = STAT_GROUPS.map(G => `<div class="pick-sec"><p class="pick-h">${G.title}</p><div class="pick-grid">${STATS.filter(x => x.g === G.g).map(item).join('')}</div></div>`).join('');
-  $('#pickCount').textContent = `${statSel.size} of ${STATS.length} shown`;
-}
-function saveSel() { try { localStorage.setItem('abcstatlab-calc-stats-v6', JSON.stringify([...statSel])); } catch (_) {} }
-function renderCalcTiles() {
-  const box = $('#calcTiles');
-  if (!calcLast) return;
-  const sym = calcSym(), d = calcLast;
-  const chosen = STATS.filter(x => statSel.has(x.k));
-  box.classList.toggle('empty', !chosen.length);
-  box.innerHTML = !chosen.length ? '<p class="sub" style="padding:12px 14px;margin:0">No results selected. Open "Choose which results to show" and tick the ones you need.</p>'
-    : chosen.map(x => {
-        if (x.parts) return `<div class="res-card pair ${x.cls}"><div class="k">${x.label(sym)}</div><div class="parts">${x.parts(d).map(([k, v, f]) => `<div><div class="pk">${k}</div><div class="v">${fmt(v, 4)}</div></div>`).join('')}</div></div>`;
-        if (x.k === 'pct') return `<div class="res-card pct"><label class="k" for="pctK">Percentile P<input type="number" id="pctK" min="1" max="99" step="1" value="${fmtK(pctK)}" aria-label="Which percentile (1 to 99)"></label><div class="v" id="pctVal">${x.val(d)}</div></div>`;
-        const v = x.val(d);
-        // long lists (several modes or outliers) take a full row so they stay readable
-        const wide = v.length > 16 ? ' wide' : '';
-        return `<div class="res-card ${x.cls}${wide}"${x.tip ? ` title="${x.tip}"` : ''}><div class="k">${x.label(sym)}</div><div class="v">${v}</div></div>`;
-      }).join('');
-}
-$('#calcTiles').addEventListener('input', e => {
-  if (e.target.id !== 'pctK' || !calcLast) return;
-  const k = parseFloat(e.target.value);
-  const ok = k > 0 && k < 100;
-  e.target.classList.toggle('bad', !ok);
-  if (!ok) { $('#pctVal').textContent = '—'; return; }
-  pctK = k;
-  try { localStorage.setItem('abcstatlab-pct', String(k)); } catch (_) {}
-  $('#pctVal').textContent = fmt(pctOf(calcLast.s, k), 4);
-});
-$('#pickGrid').addEventListener('change', e => {
-  const cb = e.target.closest('[data-stat]'); if (!cb) return;
-  if (cb.checked) statSel.add(cb.dataset.stat); else statSel.delete(cb.dataset.stat);
-  cb.parentElement.classList.toggle('on', cb.checked);
-  $('#pickCount').textContent = `${statSel.size} of ${STATS.length} shown`;
-  saveSel(); renderCalcTiles();
-});
-$$('[data-pickset]').forEach(b => b.addEventListener('click', () => {
-  const set = b.dataset.pickset;
-  statSel = new Set(set === 'default' ? DEFAULT_STATS : set === 'all' ? STATS.map(x => x.k) : set === 'none' ? [] : STATS.filter(x => x.g === set).map(x => x.k));
-  saveSel(); renderPicker(); renderCalcTiles();
-}));
-function calcRun() {
-  const { vals, bad } = parseData(calcIn.value);
-  const status = $('#calcStatus');
-  status.classList.toggle('err', bad.length > 0);
-  if (bad.length) status.textContent = `Skipped ${bad.length} entr${bad.length > 1 ? 'ies' : 'y'} that ${bad.length > 1 ? 'are' : 'is'} not a number: ${bad.slice(0, 5).join(', ')}${bad.length > 5 ? '…' : ''}`;
-  else status.textContent = '';
-  const badge = $('#calcCount');
-  badge.textContent = vals.length ? `n = ${vals.length}${bad.length ? ` · ${bad.length} skipped` : ''}` : '';
-  badge.classList.toggle('warn', bad.length > 0);
-  if (!vals.length) {
-    calcLast = null;
-    $('#calcTiles').innerHTML = '<p class="sub">Enter at least one number to see results.</p>';
-    $('#calcSvg').replaceChildren(); $('#freqTable').innerHTML = ''; $('#stepTable').innerHTML = ''; $('#stepWorking').innerHTML = '';
-    return;
-  }
-  const d = calcLast = describe(vals, calcSample);
-  d.raw = vals;
-  renderPicker();
-  renderCalcTiles();
-  calcChart(d);
-  // frequency table
-  const { bins } = makeBins(d.s);
-  let cum = 0;
-  const rows = bins.map(b => { cum += b.c; return `<tr><td>${fmt(b.lo, 4)} – &lt;${fmt(b.hi, 4)}</td><td>${b.c}</td><td>${(b.c / d.n * 100).toFixed(1)}%</td><td>${cum}</td></tr>`; }).join('');
-  $('#freqTable').innerHTML = `<thead><tr><th>Class</th><th>Frequency (f)</th><th>Relative</th><th>Cumulative</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${d.n}</td><td>100%</td><td></td></tr></tfoot>`;
-  // steps
-  const mu = d.mean;
-  const shown = d.raw.slice(0, 60);
-  let ss = 0;
-  d.raw.forEach(x => { ss += (x - mu) ** 2; });
-  $('#stepTable').innerHTML = `<thead><tr><th>#</th><th>x</th><th>x − ${calcSample ? 'x̄' : 'μ'}</th><th>(x − ${calcSample ? 'x̄' : 'μ'})²</th></tr></thead><tbody>${shown.map((x, i) => `<tr><td>${i + 1}</td><td>${fmt(x, 4)}</td><td>${fmt(x - mu, 4)}</td><td>${fmt((x - mu) ** 2, 4)}</td></tr>`).join('')}${d.raw.length > 60 ? `<tr><td colspan="4" style="text-align:center">… ${d.raw.length - 60} more rows</td></tr>` : ''}</tbody><tfoot><tr><td>Σ</td><td>${fmt(d.sum, 4)}</td><td>0</td><td>${fmt(ss, 4)}</td></tr></tfoot>`;
-  const m = calcSample ? '<i>x̄</i>' : 'μ', N = calcSample ? '<i>n</i>' : '<i>N</i>';
-  const denom = calcSample ? d.n - 1 : d.n;
-  $('#stepWorking').innerHTML = d.n < (calcSample ? 2 : 1) ? `${m} = Σ<i>x</i> ÷ ${N} = ${fmt(d.sum, 4)} ÷ ${d.n} = ${fmt(mu, 4)}<br>A sample needs at least 2 values for a standard deviation.` :
-    `${m} = Σ<i>x</i> ÷ ${N} = ${fmt(d.sum, 4)} ÷ ${d.n} = <b>${fmt(mu, 4)}</b><br>` +
-    `${calcSample ? '<i>s</i>²' : 'σ²'} = Σ(<i>x</i> − ${m})² ÷ ${calcSample ? '(<i>n</i> − 1)' : '<i>N</i>'} = ${fmt(ss, 4)} ÷ ${denom} = <b>${fmt(d.variance, 4)}</b><br>` +
-    `${calcSample ? '<i>s</i>' : 'σ'} = √${fmt(d.variance, 4)} = <b>${fmt(d.sdUsed, 4)}</b>`;
-}
-// smooth line through points that never overshoots (monotone cubic, Fritsch–Carlson), so a frequency curve never dips below zero
-function smoothPath(P) {
-  const n = P.length;
-  if (n < 2) return '';
-  const dx = [], m = [], t = [];
-  for (let i = 0; i < n - 1; i++) { dx[i] = P[i + 1][0] - P[i][0]; m[i] = (P[i + 1][1] - P[i][1]) / dx[i]; }
-  t[0] = m[0]; t[n - 1] = m[n - 2];
-  for (let i = 1; i < n - 1; i++) t[i] = m[i - 1] * m[i] <= 0 ? 0 : (m[i - 1] + m[i]) / 2;
-  for (let i = 0; i < n - 1; i++) {
-    if (m[i] === 0) { t[i] = 0; t[i + 1] = 0; continue; }
-    const a = t[i] / m[i], b = t[i + 1] / m[i], s = a * a + b * b;
-    if (s > 9) { const k = 3 / Math.sqrt(s); t[i] = k * a * m[i]; t[i + 1] = k * b * m[i]; }
-  }
-  const f = v => v.toFixed(2);
-  let d = `M${f(P[0][0])} ${f(P[0][1])}`;
-  for (let i = 0; i < n - 1; i++) {
-    const h = dx[i] / 3;
-    d += ` C${f(P[i][0] + h)} ${f(P[i][1] + t[i] * h)} ${f(P[i + 1][0] - h)} ${f(P[i + 1][1] - t[i + 1] * h)} ${f(P[i + 1][0])} ${f(P[i + 1][1])}`;
-  }
-  return d;
-}
-function calcChart(d) {
-  const svg = $('#calcSvg'), wrap = $('#calcChart');
-  svg.replaceChildren();
-  const W = Math.max(280, Math.round(wrap.clientWidth)), H = 318;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H);
-  const { w, bins } = makeBins(d.s);
-  const lo = bins[0].lo, hi = bins[bins.length - 1].hi;
-  // half a class width of room on each side, so the frequency curve can come down to zero
-  const xlo = lo - w / 2, xhi = hi + w / 2;
-  const padL = 36, padR = 14, top = 44, base = 196;
-  const x = v => padL + (v - xlo) / (xhi - xlo) * (W - padL - padR);
-  const maxC = Math.max(...bins.map(b => b.c));
-  const yStep = Math.max(1, Math.ceil(niceStep(maxC / 4)));
-  const yMax = Math.ceil(maxC / yStep) * yStep;
-  const y = c => base - c / yMax * (base - top);
-  for (let c = 0; c <= yMax; c += yStep) {
-    el('line', { x1: padL, x2: W - padR, y1: y(c), y2: y(c), class: 'gridline' }, svg);
-    svgText(svg, padL - 6, y(c) + 4, String(c), 'bar-label', 'end');
-  }
-  bins.forEach(b => {
-    const bx = x(b.lo) + 1, bw = Math.max(1, x(b.hi) - x(b.lo) - 2);
-    if (b.c) el('rect', { x: bx, y: y(b.c), width: bw, height: base - y(b.c), rx: 2, class: 'bar' }, svg);
-  });
-  // frequency curve: a smooth line through the top-middle of every bar, starting and ending at zero
-  const fpts = [[x(lo - w / 2), base], ...bins.map(b => [x((b.lo + b.hi) / 2), y(b.c)]), [x(hi + w / 2), base]];
-  el('path', { d: smoothPath(fpts), class: 'fcurve' }, svg);
-  fpts.slice(1, -1).forEach(([cx, cy]) => el('circle', { cx: cx.toFixed(2), cy: cy.toFixed(2), r: 3, class: 'fpt' }, svg));
-  el('line', { x1: padL, x2: W - padR, y1: base, y2: base, class: 'ax-line' }, svg);
-  const every = Math.ceil((bins.length + 1) / Math.max(2, Math.floor((W - padL - padR) / 52)));
-  for (let i = 0; i <= bins.length; i++) {
-    if (i % every) continue;
-    const v = lo + (hi - lo) * i / bins.length;
-    el('line', { x1: x(v), x2: x(v), y1: base, y2: base + 5, class: 'ax-tick' }, svg);
-    svgText(svg, x(v), base + 18, fmt(v, 3), 'bar-label');
-  }
-  const anchorFor = px => px < padL + 50 ? 'start' : px > W - 60 ? 'end' : 'middle';
-  el('line', { x1: x(d.median), x2: x(d.median), y1: top - 10, y2: base, class: 'ln-median' }, svg);
-  el('line', { x1: x(d.mean), x2: x(d.mean), y1: top - 24, y2: base, class: 'ln-mean' }, svg);
-  svgText(svg, x(d.mean), 14, `mean ${fmt(d.mean, 2)}`, 't-mean halo', anchorFor(x(d.mean)));
-  svgText(svg, x(d.median), 29, `median ${fmt(d.median, 2)}`, 't-median halo', anchorFor(x(d.median)));
-  if (d.n >= 2) {
-    const g = el('g', { class: 'bx-big' }, svg);
-    const by = 226, bh = 46, bm = by + bh / 2;
-    drawBox(g, d, x, by, bh);
-    // value of every outlier next to its circle; labels that would touch alternate above and below
-    const outs = new Map();
-    d.outliers.forEach(v => outs.set(v, (outs.get(v) || 0) + 1));
-    let lastUp = -Infinity, lastDown = -Infinity;
-    outs.forEach((c, v) => {
-      const px = x(v), txt = fmt(v, 2) + (c > 1 ? ` (×${c})` : '');
-      const need = txt.length * 7.6 + 6;
-      const anchor = px < padL + 24 ? 'start' : px > W - padR - 24 ? 'end' : 'middle';
-      let yy;
-      if (px - lastUp >= need) { yy = bm - 11; lastUp = px; }
-      else if (px - lastDown >= need) { yy = bm + 20; lastDown = px; }
-      else return;
-      svgText(g, px, yy, txt, 't-out halo', anchor);
-    });
-    // five-number summary labels under the box (with outliers, the whisker stops short of the true min / max)
-    // the two ends are written outward from their whisker so they leave room for Q1 and Q3.
-    // Placed in order of importance (median first); a label that would overlap one already placed is skipped.
-    const lab = [[d.median, 'median', 'middle'], [d.lo, d.lo === d.min ? 'min' : 'whisker', 'end'], [d.hi, d.hi === d.max ? 'max' : 'whisker', 'start'], [d.q1, 'Q1', 'middle'], [d.q3, 'Q3', 'middle']];
-    const placed = [];
-    lab.forEach(([v, t, anchor]) => {
-      const px = x(v), val = fmt(v, 2), wd = Math.max(t.length * 6.7, val.length * 7);
-      if (anchor === 'end' && px - wd < 2) anchor = 'start';
-      if (anchor === 'start' && px + wd > W - 2) anchor = 'end';
-      const left = anchor === 'start' ? px : anchor === 'end' ? px - wd : px - wd / 2;
-      if (placed.some(([l, r]) => left < r + 5 && left + wd > l - 5)) return;
-      placed.push([left, left + wd]);
-      svgText(g, px, 290, t, 't-muted', anchor).setAttribute('style', 'font-size:11px');
-      svgText(g, px, 304, val, 'bar-label', anchor);
-    });
-  }
-}
-calcIn.addEventListener('input', () => { clearTimeout(calcIn._t); calcIn._t = setTimeout(calcRun, 120); });
-/* data input: examples, random, sort, upload, drag and drop, clear with undo */
-function setData(vals, note) {
-  calcIn.value = Array.isArray(vals) ? vals.join(', ') : vals;
-  calcIn.classList.remove('flash'); void calcIn.offsetWidth; calcIn.classList.add('flash');
-  calcRun();
-  if (note) toast(note);
-}
-function markExample(key) { $$('[data-example]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.example === key))); }
-$('#calcRandom').addEventListener('click', () => { setData(Array.from({ length: 20 }, () => Math.round(50 + 10 * gauss())), '20 random values, mean about 50'); markExample(null); });
-$('#calcSort').addEventListener('click', () => { const { vals } = parseData(calcIn.value); if (vals.length) setData(S.sorted(vals)); });
-let clearUndo = null, clearT;
-$('#calcClear').addEventListener('click', () => {
-  const lbl = $('#calcClear span');
-  if (clearUndo !== null) { calcIn.value = clearUndo; clearUndo = null; lbl.textContent = 'Clear'; clearTimeout(clearT); calcRun(); return; }
-  if (!calcIn.value.trim()) return;
-  clearUndo = calcIn.value; calcIn.value = ''; calcRun(); calcIn.focus(); markExample(null);
-  lbl.textContent = 'Undo clear';
-  clearT = setTimeout(() => { clearUndo = null; lbl.textContent = 'Clear'; }, 8000);
-});
-calcIn.addEventListener('input', () => { markExample(null); if (clearUndo !== null) { clearUndo = null; $('#calcClear span').textContent = 'Clear'; } });
-// Excel reader (SheetJS) is loaded only when someone opens an Excel file
-let xlsxLib = null;
-function loadXlsxLib() {
-  if (window.XLSX) return Promise.resolve(window.XLSX);
-  if (xlsxLib) return xlsxLib;
-  xlsxLib = new Promise((res, rej) => {
-    const sc = document.createElement('script');
-    sc.src = 'https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js';
-    sc.onload = () => res(window.XLSX);
-    sc.onerror = () => { xlsxLib = null; rej(new Error('load')); };
-    document.head.appendChild(sc);
-  });
-  return xlsxLib;
-}
-// every column that holds numbers, with its header (first text cell above the numbers) if there is one
-function numericColumns(rows) {
-  const width = Math.max(0, ...rows.map(r => r.length));
-  const cols = [];
-  for (let c = 0; c < width; c++) {
-    let head = '', vals = [];
-    rows.forEach(r => {
-      const v = r[c];
-      if (typeof v === 'number' && Number.isFinite(v)) vals.push(v);
-      else if (typeof v === 'string' && v.trim() !== '') {
-        const n = Number(v.trim());
-        if (Number.isFinite(n)) vals.push(n); else if (!vals.length && !head) head = v.trim();
-      }
-    });
-    if (vals.length) cols.push({ name: head || 'Column ' + colName(c), vals });
-  }
-  return cols;
-}
-const colName = c => { let s = ''; c++; while (c) { const m = (c - 1) % 26; s = String.fromCharCode(65 + m) + s; c = Math.floor((c - 1) / 26); } return s; };
-function chooseColumn(cols, fileName) {
-  $('#modalTitle').textContent = 'Which column?';
-  $('#modalBody').innerHTML = `<p>${fileName} has ${cols.length} columns with numbers. Pick the one to analyse.</p><div class="col-pick">${cols.map((c, i) => `<button class="btn" type="button" data-col="${i}"><b>${escapeHtml(c.name)}</b><span>${c.vals.length} values · ${c.vals.slice(0, 4).map(v => fmt(v, 3)).join(', ')}${c.vals.length > 4 ? ' …' : ''}</span></button>`).join('')}</div><p class="bn">কোন কলামের ডেটা বিশ্লেষণ করবেন, সেটি বেছে নিন।</p>`;
-  lastFocus = document.activeElement;
-  $('#modalBack').hidden = false;
-  const first = $('#modalBody [data-col]'); if (first) first.focus();
-  $('#modalBody').onclick = e => {
-    const b = e.target.closest('[data-col]'); if (!b) return;
-    const c = cols[+b.dataset.col];
-    closeModal(); $('#modalBody').onclick = null;
-    setData(c.vals, `${c.vals.length} values loaded from “${c.name}”`); markExample(null);
-  };
-}
-const escapeHtml = t => String(t).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-function useColumns(cols, fileName) {
-  if (!cols.length) { toast('No numbers found in ' + fileName); return; }
-  if (cols.length === 1) { setData(cols[0].vals, `${cols[0].vals.length} values loaded from ${fileName}`); markExample(null); return; }
-  chooseColumn(cols, fileName);
-}
-function loadFile(file) {
-  if (!file) return;
-  if (/\.(xlsx|xlsm|xls|ods)$/i.test(file.name)) {
-    toast('Reading ' + file.name + ' …');
-    Promise.all([loadXlsxLib(), file.arrayBuffer()]).then(([X, buf]) => {
-      const wb = X.read(buf, { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = X.utils.sheet_to_json(ws, { header: 1, raw: true, blankrows: false });
-      useColumns(numericColumns(rows), file.name);
-    }).catch(() => toast('Could not read this Excel file. Check your internet connection, or copy the column and paste it.'));
-    return;
-  }
-  const r = new FileReader();
-  r.onload = () => {
-    const text = String(r.result);
-    // CSV / TSV with several columns: treat it like a sheet so the user can pick a column
-    const lines = text.split(/\r?\n/).filter(l => l.trim());
-    const delim = lines.some(l => l.includes('\t')) ? '\t' : lines.filter(l => l.includes(',')).length > lines.length / 2 && lines.some(l => /,.*,|[a-z]/i.test(l)) ? ',' : null;
-    if (delim) {
-      const cols = numericColumns(lines.map(l => l.split(delim).map(x => x.trim())));
-      if (cols.length > 1 || (cols.length === 1 && lines.length > 1)) { useColumns(cols, file.name); return; }
-    }
-    const { vals } = parseData(text);
-    useColumns(vals.length ? [{ name: file.name, vals }] : [], file.name);
-  };
-  r.readAsText(file);
-}
-$('#calcUpload').addEventListener('click', () => $('#calcFile').click());
-$('#calcFile').addEventListener('change', e => { loadFile(e.target.files[0]); e.target.value = ''; });
-const dz = $('#calcDrop');
-['dragenter', 'dragover'].forEach(t => dz.addEventListener(t, e => { if ([...(e.dataTransfer?.types || [])].includes('Files')) { e.preventDefault(); dz.classList.add('over'); } }));
-['dragleave', 'drop'].forEach(t => dz.addEventListener(t, () => dz.classList.remove('over')));
-dz.addEventListener('drop', e => { if (e.dataTransfer?.files?.length) { e.preventDefault(); loadFile(e.dataTransfer.files[0]); } });
-
-$$('[data-calcmode]').forEach(b => b.addEventListener('click', () => {
-  calcSample = b.dataset.calcmode === 'sample';
-  $$('[data-calcmode]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-  calcRun();
-}));
-$('#calcCopy').addEventListener('click', async () => {
-  const st = $('#calcStatus');
-  if (!calcLast) return;
-  const d = calcLast;
-  const sym = calcSym();
-  const chosen = STATS.filter(x => statSel.has(x.k));
-  if (!chosen.length) { st.classList.add('err'); st.textContent = 'No results selected to copy.'; return; }
-  const lines = [`Formulas: ${calcSample ? 'sample (n − 1)' : 'population (N)'}`, ...chosen.map(x => `${x.copyLabel ? x.copyLabel() : x.label(sym)}: ${x.copy(d)}`)].map(s => String(s).replace(/−/g, '-'));
-  try { await navigator.clipboard.writeText(lines.join('\n')); st.classList.remove('err'); st.textContent = 'Results copied to the clipboard.'; }
-  catch (_) { st.classList.add('err'); st.textContent = 'Copying is blocked here. Select the numbers and copy them by hand.'; }
-});
-$('#calcToPg').addEventListener('click', () => {
-  const st = $('#calcStatus');
-  if (!calcLast) return;
-  const v = calcLast.raw;
-  if (v.some(x => x < 0 || x > 100) || v.length > 60) {
-    st.classList.add('err');
-    st.textContent = 'The playground shows up to 60 values between 0 and 100. Rescale or trim your data first.';
-    return;
-  }
-  const prevSnap = pg.opt.snap;
-  if (v.some(x => !Number.isInteger(x))) { pg.opt.snap = false; $('[data-opt="snap"]').checked = false; }
-  pgLoad(v, null);
-  if (prevSnap !== pg.opt.snap) pgUpdate();
-  goTo('playground');
-});
 
 /* ================= Normal explorer ================= */
 const ne = { mu: 60, sd: 8, a: 52, b: 76, mode: 'between', bands: false, drag: null, geom: null };
@@ -2323,584 +1686,42 @@ $('#zIn').addEventListener('input', () => zLookup(true));
 ['#cDf', '#cAlpha'].forEach(id => $(id).addEventListener(id === '#cDf' ? 'input' : 'change', () => cLookup(true)));
 ['#fD1', '#fD2', '#fAlpha'].forEach(id => $(id).addEventListener(id === '#fAlpha' ? 'change' : 'input', () => fLookup(true)));
 
-/* ================= Videos ================= */
-const VGROUPS = [
-  { key: 'center', title: 'Averages: mean, median and mode', color: 'var(--mean)' },
-  { key: 'spread', title: 'Spread: range, variance, standard deviation, box plots', color: 'var(--accent)' },
-  { key: 'normal', title: 'Normal distribution and z-scores', color: 'var(--median)' }
-];
-const VIDEOS = [
-  { g: 'center', title: 'Statistics intro: mean, median and mode', ch: 'Khan Academy', dur: '8:54', url: 'https://www.youtube.com/watch?v=h8EYEJ32oQ8', why: 'A calm first introduction to the three ways of describing the centre.' },
-  { g: 'center', title: 'Finding mean, median and mode', ch: 'Khan Academy', dur: '3:55', url: 'https://www.youtube.com/watch?v=k3aKKasOmIw', why: 'One worked example, start to finish. Good for quick revision.' },
-  { g: 'center', title: 'Mean, median and mode: measures of central tendency', ch: 'CrashCourse Statistics #3', dur: '11:23', url: 'https://thecrashcourse.com/courses/mean-median-and-mode-measures-of-central-tendency-crash-course-statistics-3/', why: 'Shows how one billionaire changes the mean income of a group but not the median.' },
-  { g: 'spread', title: 'Measures of spread', ch: 'CrashCourse Statistics #4', dur: '11:47', url: 'https://thecrashcourse.com/?p=1659', why: 'Range, IQR, variance and standard deviation, explained with real examples.' },
-  { g: 'spread', title: 'The mean, variance and standard deviation', ch: 'StatQuest', dur: '', url: 'https://www.youtube.com/watch?v=SzZ6GpcfoQY', why: 'A picture-first explanation of where the variance formula comes from.' },
-  { g: 'spread', title: 'Box and whisker plot', ch: 'Khan Academy', dur: '3:18', url: 'https://www.youtube.com/watch?v=b2C9I8HuCe4', why: 'How to read the five-number summary from a box plot.' },
-  { g: 'normal', title: 'The normal distribution, clearly explained', ch: 'StatQuest', dur: '', url: 'https://www.youtube.com/watch?v=rzFX5NWojp0', why: 'What the bell curve means and how its mean and SD shape it.' },
-  { g: 'normal', title: 'The normal distribution and the 68–95–99.7 rule', ch: 'Simple Learning Pro', dur: '', url: 'https://www.youtube.com/watch?v=mtbJbDwqWLE', why: 'Short and visual. Pairs well with the normal curve explorer.' },
-  { g: 'normal', title: 'Z-scores and percentiles', ch: 'CrashCourse Statistics #18', dur: '10:54', url: 'https://www.youtube.com/watch?v=uAxyI_XfqXk', why: 'Compares scores from different tests using z-scores.' },
-  { g: 'normal', title: 'Introduction to the normal distribution', ch: 'Khan Academy', dur: '26:24', url: 'https://www.youtube.com/watch?v=VLsP-jF_ANA', why: 'A longer lecture for students who want the full picture.' }
-];
-function thumbArt(g) {
-  if (g === 'center') return '<svg class="art" viewBox="0 0 160 90" preserveAspectRatio="none" aria-hidden="true"><g fill="var(--accent)" opacity=".35"><circle cx="34" cy="66" r="6"/><circle cx="52" cy="66" r="6"/><circle cx="52" cy="52" r="6"/><circle cx="70" cy="66" r="6"/><circle cx="88" cy="66" r="6"/><circle cx="88" cy="52" r="6"/><circle cx="130" cy="66" r="6"/></g><line x1="20" x2="140" y1="74" y2="74" stroke="var(--muted)" opacity=".5"/><line x1="72" x2="72" y1="18" y2="74" stroke="var(--median)" stroke-width="2" stroke-dasharray="4 3" opacity=".7"/><line x1="80" x2="80" y1="18" y2="74" stroke="var(--mean)" stroke-width="2" opacity=".7"/></svg>';
-  if (g === 'spread') return '<svg class="art" viewBox="0 0 160 90" preserveAspectRatio="none" aria-hidden="true"><rect x="52" y="24" width="56" height="26" rx="3" fill="var(--accent)" opacity=".18" stroke="var(--accent)" stroke-opacity=".5"/><line x1="18" x2="52" y1="37" y2="37" stroke="var(--accent)" opacity=".5"/><line x1="108" x2="142" y1="37" y2="37" stroke="var(--accent)" opacity=".5"/><line x1="78" x2="78" y1="24" y2="50" stroke="var(--median)" stroke-width="3" opacity=".6"/><line x1="20" x2="140" y1="72" y2="72" stroke="var(--muted)" opacity=".5"/></svg>';
-  return '<svg class="art" viewBox="0 0 160 90" preserveAspectRatio="none" aria-hidden="true"><path d="M10 74 C 50 74, 58 16, 80 16 S 110 74, 150 74 Z" fill="var(--median)" opacity=".16"/><path d="M10 74 C 50 74, 58 16, 80 16 S 110 74, 150 74" fill="none" stroke="var(--median)" stroke-width="2" opacity=".6"/><line x1="10" x2="150" y1="74" y2="74" stroke="var(--muted)" opacity=".5"/></svg>';
-}
-$('#videoGroups').innerHTML = VGROUPS.map(G => `<div class="vid-group"><h3><i style="background:${G.color}"></i>${G.title}</h3><div class="vids">${VIDEOS.filter(v => v.g === G.key).map(v => {
-  const host = new URL(v.url).hostname.replace('www.', '');
-  return `<a class="vid" href="${v.url}" target="_blank" rel="noopener noreferrer"><div class="thumb">${thumbArt(v.g)}<span class="play"><svg width="18" height="18" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="var(--surface)"/></svg></span>${v.dur ? `<span class="dur">${v.dur}</span>` : ''}</div><div class="meta"><span class="ch">${v.ch}</span><h3 style="font-size:15px">${v.title}</h3><p class="why">${v.why}</p><span class="go">Watch on ${host === 'youtube.com' ? 'YouTube' : host} ↗</span></div></a>`;
-}).join('')}</div></div>`).join('');
-
 /* ================= Concepts ================= */
 const CONCEPTS = [
-  { c: 'mean-c', name: 'Mean', bn: 'গাণিতিক গড়', def: 'Add every value and divide by how many there are. The mean is the balance point of the data: the distances below it and above it cancel out exactly.', f: '<i>x̄</i> = Σ<i>x</i> ÷ <i>n</i>', ex: '2, 4, 9  →  (2 + 4 + 9) ÷ 3 = 5', watch: 'One extreme value can drag it a long way.', bnl: 'সব মানের যোগফলকে মোট মানের সংখ্যা দিয়ে ভাগ করলে গড় পাওয়া যায়।', btn: 'Drag an outlier in the playground', act: 'preset:outlier' },
-  { c: 'median-c', name: 'Median', bn: 'মধ্যক', def: 'Sort the values; the median is the middle one. With an even count, take the average of the two middle values. Half the data lies on each side.', f: 'position = (<i>n</i> + 1) ÷ 2', ex: '3, 7, 8, 12  →  (7 + 8) ÷ 2 = 7.5', watch: 'Prefer it for skewed data such as incomes or house prices.', bnl: 'মানগুলো ছোট থেকে বড় সাজালে ঠিক মাঝের মানটিই মধ্যক।', btn: 'Compare it with the mean', act: 'preset:right' },
-  { c: 'mode-c', name: 'Mode', bn: 'প্রচুরক', def: 'The value that appears most often. A data set can have one mode, several modes, or none at all.', f: 'mode = the most frequent value', ex: '2, 3, 3, 5, 5, 5  →  5', watch: 'The only average that also works for categories, such as favourite colour.', bnl: 'যে মান সবচেয়ে বেশিবার আসে, সেটিই প্রচুরক।', btn: 'Load a two-peak data set', act: 'preset:bimodal' },
-  { c: 'spread-c', name: 'Range and IQR', bn: 'পরিসর ও আন্তঃচতুর্থক পরিসর', def: 'The range is the full distance from smallest to largest value. The interquartile range covers only the middle 50%, so extremes do not affect it.', f: 'Range = max − min  ·  IQR = <i>Q</i><sub>3</sub> − <i>Q</i><sub>1</sub>', ex: '1, 3, 4, 6, 8, 9, 15  →  range 14, IQR 9 − 3 = 6', watch: 'The range depends on just two numbers; the IQR is much steadier.', bnl: 'পরিসর = বৃহত্তম মান − ক্ষুদ্রতম মান।', btn: 'Try it in the calculator', act: 'calc:1, 3, 4, 6, 8, 9, 15' },
-  { c: 'spread-c', name: 'Variance and standard deviation', bn: 'ভেদাঙ্ক ও পরিমিত ব্যবধান', def: 'Variance is the average squared distance from the mean. The standard deviation is its square root, back in the original units: a typical distance from the mean.', f: '<i>s</i>² = Σ(<i>x</i> − <i>x̄</i>)² ÷ (<i>n</i> − 1)  ·  <i>s</i> = √<i>s</i>²', ex: '2, 4, 4, 4, 5, 5, 7, 9  →  σ = 2, s ≈ 2.14', watch: 'Squaring stops negative and positive distances from cancelling out.', bnl: 'পরিমিত ব্যবধান বলে মানগুলো গড় থেকে সাধারণত কতটা দূরে থাকে।', btn: 'See every step in the calculator', act: 'steps:2, 4, 4, 4, 5, 5, 7, 9' },
-  { c: 'spread-c', name: 'Quartiles and box plots', bn: 'চতুর্থক ও বক্স প্লট', def: 'Quartiles split sorted data into four equal parts. A box plot draws the five-number summary: minimum, Q1, median, Q3 and maximum.', f: '<i>Q</i><sub>1</sub> = (<i>n</i> + 1)/4 th value  ·  <i>Q</i><sub>3</sub> = 3(<i>n</i> + 1)/4 th value', ex: '1, 3, 4, 6, 8, 9, 15  →  Q1 = 3, median 6, Q3 = 9', watch: 'Textbooks and software use slightly different quartile rules, so small differences are normal.', bnl: 'তিনটি চতুর্থক ডেটাকে চারটি সমান ভাগে ভাগ করে।', btn: 'See the box plot move', act: 'preset:default' },
-  { c: 'mean-c', name: 'Outliers', bn: 'বহির্মান', def: 'Values unusually far from the rest. The common 1.5 × IQR rule flags anything beyond two fences.', f: 'below <i>Q</i><sub>1</sub> − 1.5·IQR  or  above <i>Q</i><sub>3</sub> + 1.5·IQR', ex: 'Q1 = 3, Q3 = 9, IQR = 6  →  fences at −6 and 18', watch: 'An outlier may be a typing mistake or the most interesting point in your data. Check before deleting it.', bnl: 'বাকি মানগুলো থেকে অস্বাভাবিক দূরের মানকে বহির্মান বলে।', btn: 'Add an outlier', act: 'preset:outlier' },
-  { c: 'mode-c', name: 'Skewness', bn: 'বঙ্কিমতা', def: 'Skew describes a lopsided shape. In right (positive) skew the long tail points right and the mean is pulled above the median. Left skew is the mirror image.', f: 'Pearson: <i>Sk</i> = 3(<i>x̄</i> − median) ÷ <i>s</i>', ex: 'mean 60, median 50, s = 20  →  Sk = 1.5 (right-skewed)', watch: 'A quick check: compare the mean and the median.', bnl: 'বণ্টনের এক দিকে লম্বা লেজ থাকলে তাকে বঙ্কিম বণ্টন বলে।', btn: 'Load right-skewed data', act: 'preset:right' },
-  { c: 'median-c', name: 'Normal distribution', bn: 'পরিমিত বিন্যাস', def: 'A symmetric, bell-shaped distribution set by its mean μ and standard deviation σ. The mean, median and mode all sit at the centre.', f: '68% within μ ± σ  ·  95% within μ ± 2σ  ·  99.7% within μ ± 3σ', ex: 'μ = 60, σ = 8  →  about 95% of scores lie between 44 and 76', watch: 'Many measurements are roughly normal, but incomes and waiting times usually are not.', bnl: 'পরিমিত বিন্যাস ঘণ্টার মতো আকৃতির এবং গড়ের দুই পাশে প্রতিসম।', btn: 'Open the normal curve explorer', act: 'goto:normal' },
-  { c: 'median-c', name: 'Z-score', bn: 'আদর্শ মান (z-স্কোর)', def: 'How many standard deviations a value sits from the mean. Z-scores let you compare results measured on different scales.', f: '<i>z</i> = (<i>x</i> − μ) ÷ σ', ex: 'μ = 60, σ = 8, x = 72  →  z = 1.5  →  93.32% score lower', watch: 'Positive z means above the mean; negative z means below it.', bnl: 'z-স্কোর বলে একটি মান গড় থেকে কত পরিমিত ব্যবধান দূরে।', btn: 'Look up z = 1.50 in the table', act: 'z:1.5' },
-  { c: 'spread-c', name: 'Sample vs population', bn: 'নমুনা বনাম সমগ্রক', def: 'A population is every member of the group you care about; a sample is the part you actually measured. Sample formulas divide by n − 1 because a sample tends to underestimate the spread.', f: 'population: μ, σ, <i>N</i>  ·  sample: <i>x̄</i>, <i>s</i>, <i>n</i>', ex: 'Same 8 values: σ = 2.00 (÷ 8), s = 2.14 (÷ 7)', watch: 'Use the sample version unless you truly have every member of the group.', bnl: 'সমগ্রক হলো পুরো দল, আর নমুনা হলো তার যে অংশ আমরা মেপেছি।', btn: 'Switch modes in the calculator', act: 'calc:2, 4, 4, 4, 5, 5, 7, 9' }
+  { c: 'mean-c', name: 'Mean', def: 'Add every value and divide by how many there are. The mean is the balance point of the data: the distances below it and above it cancel out exactly.', f: '<i>x̄</i> = Σ<i>x</i> ÷ <i>n</i>', ex: '2, 4, 9  →  (2 + 4 + 9) ÷ 3 = 5', watch: 'One extreme value can drag it a long way.', btn: 'Drag an outlier in the playground', act: 'preset:outlier' },
+  { c: 'median-c', name: 'Median', def: 'Sort the values; the median is the middle one. With an even count, take the average of the two middle values. Half the data lies on each side.', f: 'position = (<i>n</i> + 1) ÷ 2', ex: '3, 7, 8, 12  →  (7 + 8) ÷ 2 = 7.5', watch: 'Prefer it for skewed data such as incomes or house prices.', btn: 'Compare it with the mean', act: 'preset:right' },
+  { c: 'mode-c', name: 'Mode', def: 'The value that appears most often. A data set can have one mode, several modes, or none at all.', f: 'mode = the most frequent value', ex: '2, 3, 3, 5, 5, 5  →  5', watch: 'The only average that also works for categories, such as favourite colour.', btn: 'Load a two-peak data set', act: 'preset:bimodal' },
+  { c: 'spread-c', name: 'Range and IQR', def: 'The range is the full distance from smallest to largest value. The interquartile range covers only the middle 50%, so extremes do not affect it.', f: 'Range = max − min  ·  IQR = <i>Q</i><sub>3</sub> − <i>Q</i><sub>1</sub>', ex: '1, 3, 4, 6, 8, 9, 15  →  range 14, IQR 9 − 3 = 6', watch: 'The range depends on just two numbers; the IQR is much steadier.', btn: 'Try it in the calculator', act: 'calc:1, 3, 4, 6, 8, 9, 15' },
+  { c: 'spread-c', name: 'Variance and standard deviation', def: 'Variance is the average squared distance from the mean. The standard deviation is its square root, back in the original units: a typical distance from the mean.', f: '<i>s</i>² = Σ(<i>x</i> − <i>x̄</i>)² ÷ (<i>n</i> − 1)  ·  <i>s</i> = √<i>s</i>²', ex: '2, 4, 4, 4, 5, 5, 7, 9  →  σ = 2, s ≈ 2.14', watch: 'Squaring stops negative and positive distances from cancelling out.', btn: 'See every step in the calculator', act: 'steps:2, 4, 4, 4, 5, 5, 7, 9' },
+  { c: 'spread-c', name: 'Quartiles and box plots', def: 'Quartiles split sorted data into four equal parts. A box plot draws the five-number summary: minimum, Q1, median, Q3 and maximum.', f: '<i>Q</i><sub>1</sub> = (<i>n</i> + 1)/4 th value  ·  <i>Q</i><sub>3</sub> = 3(<i>n</i> + 1)/4 th value', ex: '1, 3, 4, 6, 8, 9, 15  →  Q1 = 3, median 6, Q3 = 9', watch: 'Textbooks and software use slightly different quartile rules, so small differences are normal.', btn: 'See the box plot move', act: 'preset:default' },
+  { c: 'mean-c', name: 'Outliers', def: 'Values unusually far from the rest. The common 1.5 × IQR rule flags anything beyond two fences.', f: 'below <i>Q</i><sub>1</sub> − 1.5·IQR  or  above <i>Q</i><sub>3</sub> + 1.5·IQR', ex: 'Q1 = 3, Q3 = 9, IQR = 6  →  fences at −6 and 18', watch: 'An outlier may be a typing mistake or the most interesting point in your data. Check before deleting it.', btn: 'Add an outlier', act: 'preset:outlier' },
+  { c: 'mode-c', name: 'Skewness', def: 'Skew describes a lopsided shape. In right (positive) skew the long tail points right and the mean is pulled above the median. Left skew is the mirror image.', f: 'Pearson: <i>Sk</i> = 3(<i>x̄</i> − median) ÷ <i>s</i>', ex: 'mean 60, median 50, s = 20  →  Sk = 1.5 (right-skewed)', watch: 'A quick check: compare the mean and the median.', btn: 'Load right-skewed data', act: 'preset:right' },
+  { c: 'median-c', name: 'Normal distribution', def: 'A symmetric, bell-shaped distribution set by its mean μ and standard deviation σ. The mean, median and mode all sit at the centre.', f: '68% within μ ± σ  ·  95% within μ ± 2σ  ·  99.7% within μ ± 3σ', ex: 'μ = 60, σ = 8  →  about 95% of scores lie between 44 and 76', watch: 'Many measurements are roughly normal, but incomes and waiting times usually are not.', btn: 'Open the normal curve explorer', act: 'goto:normal' },
+  { c: 'median-c', name: 'Z-score', def: 'How many standard deviations a value sits from the mean. Z-scores let you compare results measured on different scales.', f: '<i>z</i> = (<i>x</i> − μ) ÷ σ', ex: 'μ = 60, σ = 8, x = 72  →  z = 1.5  →  93.32% score lower', watch: 'Positive z means above the mean; negative z means below it.', btn: 'Look up z = 1.50 in the table', act: 'z:1.5' },
+  { c: 'spread-c', name: 'Sample vs population', def: 'A population is every member of the group you care about; a sample is the part you actually measured. Sample formulas divide by n − 1 because a sample tends to underestimate the spread.', f: 'population: μ, σ, <i>N</i>  ·  sample: <i>x̄</i>, <i>s</i>, <i>n</i>', ex: 'Same 8 values: σ = 2.00 (÷ 8), s = 2.14 (÷ 7)', watch: 'Use the sample version unless you truly have every member of the group.', btn: 'Switch modes in the calculator', act: 'calc:2, 4, 4, 4, 5, 5, 7, 9' }
 ];
-$('#conceptGrid').innerHTML = CONCEPTS.map(k => `<article class="concept ${k.c}"><div class="head"><h3>${k.name}</h3><span class="bnname">${k.bn}</span></div><p>${k.def}</p><div class="formula">${k.f}</div><div class="example">${k.ex}</div><p class="watch">${k.watch}</p><p class="bnline">${k.bnl}</p><button class="btn small" type="button" data-act="${k.act}">${k.btn} →</button></article>`).join('');
+$('#conceptGrid').innerHTML = CONCEPTS.map(k => `<article class="concept ${k.c}"><div class="head"><h3>${k.name}</h3></div><p>${k.def}</p><div class="formula">${k.f}</div><div class="example">${k.ex}</div><p class="watch">${k.watch}</p>${/^(calc|steps):/.test(k.act) ? '' : `<button class="btn small" type="button" data-act="${k.act}">${k.btn} →</button>`}</article>`).join('');
 $('#conceptGrid').addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const [kind, ...rest] = b.dataset.act.split(':');
   const arg = rest.join(':');
   if (kind === 'preset') { pgLoad(PRESETS[arg], arg); goTo('playground'); }
-  else if (kind === 'steps') { calcIn.value = arg; calcRun(); $('#calcSteps').open = true; goTo('calculator'); }
   else if (kind === 'goto') goTo(arg);
-  else if (kind === 'calc') { calcIn.value = arg; calcRun(); goTo('calculator'); }
   else if (kind === 'z') { $('#tab-z').click(); $('#zIn').value = arg; goTo('tables'); setTimeout(() => zLookup(true), 50); }
 });
 
 
-/* ================= Hypothesis tests ================= */
-const htF = (x, d = 4) => fmt(x, d);
-function htSum(a) { const n = a.length, m = S.mean(a); return { n, m, s: n > 1 ? Math.sqrt(S.variance(a, true)) : NaN, sum: S.sum(a) }; }
-const htLines = text => String(text).split(/\r?\n/).map(l => parseData(l).vals).filter(r => r.length);
-const HT_REL = { two: 'is different from', right: 'is greater than', left: 'is less than' };
-const HT_SIGN = { two: '≠', right: '>', left: '<' };
-
-const HT_TESTS = {
-  z1: {
-    chip: 'z test (σ known)', group: 'Means', title: 'One-sample z test for a mean (σ known)', modes: true,
-    fields: {
-      raw: [['x', 'Sample data', 'data', '5.4 4.9 5.6 5.1 5.8 4.7 5.3 5.5 5.0 5.2'], ['sigma', 'Population SD σ (known)', 'num', '0.4'], ['h0', 'Hypothesised mean μ₀', 'num', '5']],
-      summary: [['xbar', 'Sample mean x̄', 'num', '5.2'], ['n', 'Sample size n', 'num', '36'], ['sigma', 'Population SD σ (known)', 'num', '0.8'], ['h0', 'Hypothesised mean μ₀', 'num', '5']]
-    },
-    run(g, mode) {
-      let n, xbar, pre = '';
-      if (mode === 'raw') {
-        const a = g.data('x'); if (!a.length) return { err: 'Enter the sample data.' };
-        const t = htSum(a); n = t.n; xbar = t.m;
-        pre = `<i>x̄</i> = Σ<i>x</i> ÷ <i>n</i> = ${htF(t.sum)} ÷ ${n} = ${htF(xbar)}<br>`;
-      } else {
-        xbar = g.num('xbar'); n = g.num('n');
-        if (!Number.isFinite(xbar)) return { err: 'Enter the sample mean x̄.' };
-        if (!(n >= 1)) return { err: 'n must be 1 or more.' };
-      }
-      const sigma = g.num('sigma'), mu0 = g.num('h0');
-      if (!(sigma > 0)) return { err: 'σ must be greater than 0.' };
-      if (!Number.isFinite(mu0)) return { err: 'Enter μ₀.' };
-      const se = sigma / Math.sqrt(n), z = (xbar - mu0) / se;
-      return {
-        dist: 'z', sym: 'z', stat: z, param: 'μ', h0v: mu0, subject: 'the population mean',
-        tiles: [['Sample mean x̄', htF(xbar)], ['Std error σ/√n', htF(se)]],
-        steps: pre + `SE = σ ÷ √<i>n</i> = ${htF(sigma)} ÷ √${n} = ${htF(se)}<br><i>z</i> = (<i>x̄</i> − μ₀) ÷ SE = (${htF(xbar)} − ${htF(mu0)}) ÷ ${htF(se)} = <b>${htF(z)}</b>`
-      };
-    }
-  },
-  t1: {
-    chip: 'One-sample t', group: 'Means', title: 'One-sample t test for a mean', modes: true,
-    fields: {
-      raw: [['x', 'Sample data', 'data', '4.8 5.3 5.1 4.6 5.6 5.0 5.4 4.9 5.7 5.2'], ['h0', 'Hypothesised mean μ₀', 'num', '5']],
-      summary: [['xbar', 'Sample mean x̄', 'num', '5.16'], ['s', 'Sample SD s', 'num', '0.34'], ['n', 'Sample size n', 'num', '10'], ['h0', 'Hypothesised mean μ₀', 'num', '5']]
-    },
-    run(g, mode) {
-      let n, xbar, s, pre = '';
-      if (mode === 'raw') {
-        const a = g.data('x'); if (a.length < 2) return { err: 'Enter at least 2 values.' };
-        const t = htSum(a); n = t.n; xbar = t.m; s = t.s;
-        pre = `<i>x̄</i> = Σ<i>x</i> ÷ <i>n</i> = ${htF(t.sum)} ÷ ${n} = ${htF(xbar)}<br><i>s</i> = √[Σ(<i>x</i> − <i>x̄</i>)² ÷ (<i>n</i> − 1)] = ${htF(s)}<br>`;
-      } else {
-        xbar = g.num('xbar'); s = g.num('s'); n = g.num('n');
-        if (!Number.isFinite(xbar)) return { err: 'Enter the sample mean x̄.' };
-        if (!(s > 0)) return { err: 's must be greater than 0.' };
-        if (!(n >= 2)) return { err: 'n must be 2 or more.' };
-      }
-      if (!(s > 0)) return { err: 'All values are equal, so s = 0 and t cannot be computed.' };
-      const mu0 = g.num('h0'); if (!Number.isFinite(mu0)) return { err: 'Enter μ₀.' };
-      const se = s / Math.sqrt(n), t = (xbar - mu0) / se, df = n - 1;
-      return {
-        dist: 't', sym: 't', stat: t, df, param: 'μ', h0v: mu0, subject: 'the population mean',
-        tiles: [['Sample mean x̄', htF(xbar)], ['Sample SD s', htF(s)], ['Std error s/√n', htF(se)]],
-        steps: pre + `SE = <i>s</i> ÷ √<i>n</i> = ${htF(s)} ÷ √${n} = ${htF(se)}<br><i>t</i> = (<i>x̄</i> − μ₀) ÷ SE = (${htF(xbar)} − ${htF(mu0)}) ÷ ${htF(se)} = <b>${htF(t)}</b><br>df = <i>n</i> − 1 = ${df}`
-      };
-    }
-  },
-  t2: {
-    chip: 'Two-sample t', group: 'Means', title: 'Two independent samples t test', modes: true,
-    fields: {
-      raw: [['x', 'Sample 1 data (e.g. variety A)', 'data', '4.8 5.1 5.3 4.9 5.6 5.0 5.2'], ['y', 'Sample 2 data (e.g. variety B)', 'data', '5.4 5.8 5.5 6.1 5.7 5.9 5.3'], ['var', 'Variances', 'sel', 'pooled', [['pooled', 'Equal (pooled)'], ['welch', 'Unequal (Welch)']]], ['h0', 'Hypothesised difference μ₁ − μ₂', 'num', '0']],
-      summary: [['x1', 'Mean x̄₁', 'num', '5.13'], ['s1', 'SD s₁', 'num', '0.27'], ['n1', 'Size n₁', 'num', '7'], ['x2', 'Mean x̄₂', 'num', '5.67'], ['s2', 'SD s₂', 'num', '0.29'], ['n2', 'Size n₂', 'num', '7'], ['var', 'Variances', 'sel', 'pooled', [['pooled', 'Equal (pooled)'], ['welch', 'Unequal (Welch)']]], ['h0', 'Hypothesised difference μ₁ − μ₂', 'num', '0']]
-    },
-    run(g, mode) {
-      let A, B, pre = '';
-      if (mode === 'raw') {
-        const a = g.data('x'), b = g.data('y');
-        if (a.length < 2 || b.length < 2) return { err: 'Each sample needs at least 2 values.' };
-        A = htSum(a); B = htSum(b);
-        pre = `Sample 1: <i>n</i>₁ = ${A.n}, <i>x̄</i>₁ = ${htF(A.m)}, <i>s</i>₁ = ${htF(A.s)}<br>Sample 2: <i>n</i>₂ = ${B.n}, <i>x̄</i>₂ = ${htF(B.m)}, <i>s</i>₂ = ${htF(B.s)}<br>`;
-      } else {
-        A = { m: g.num('x1'), s: g.num('s1'), n: g.num('n1') }; B = { m: g.num('x2'), s: g.num('s2'), n: g.num('n2') };
-        if (![A.m, B.m].every(Number.isFinite)) return { err: 'Enter both sample means.' };
-        if (!(A.s > 0 && B.s > 0)) return { err: 'Both SDs must be greater than 0.' };
-        if (!(A.n >= 2 && B.n >= 2)) return { err: 'Each n must be 2 or more.' };
-      }
-      if (!(A.s > 0 || B.s > 0)) return { err: 'Both samples have no spread, so t cannot be computed.' };
-      const d0 = g.num('h0'); if (!Number.isFinite(d0)) return { err: 'Enter the hypothesised difference.' };
-      const v1 = A.s * A.s, v2 = B.s * B.s, welch = g.str('var') === 'welch';
-      let se, df, mid;
-      if (welch) {
-        se = Math.sqrt(v1 / A.n + v2 / B.n);
-        df = (v1 / A.n + v2 / B.n) ** 2 / ((v1 / A.n) ** 2 / (A.n - 1) + (v2 / B.n) ** 2 / (B.n - 1));
-        mid = `SE = √(<i>s</i>₁²/<i>n</i>₁ + <i>s</i>₂²/<i>n</i>₂) = √(${htF(v1)}/${A.n} + ${htF(v2)}/${B.n}) = ${htF(se)}<br>`;
-      } else {
-        const sp2 = ((A.n - 1) * v1 + (B.n - 1) * v2) / (A.n + B.n - 2);
-        se = Math.sqrt(sp2 * (1 / A.n + 1 / B.n)); df = A.n + B.n - 2;
-        mid = `<i>s</i><sub>p</sub>² = [(<i>n</i>₁ − 1)<i>s</i>₁² + (<i>n</i>₂ − 1)<i>s</i>₂²] ÷ (<i>n</i>₁ + <i>n</i>₂ − 2) = ${htF(sp2)}<br>SE = <i>s</i><sub>p</sub>√(1/<i>n</i>₁ + 1/<i>n</i>₂) = ${htF(se)}<br>`;
-      }
-      const t = (A.m - B.m - d0) / se;
-      return {
-        dist: 't', sym: 't', stat: t, df, param: 'μ₁ − μ₂', h0v: d0,
-        claim: alt => d0 === 0 ? { two: 'the two population means differ', right: 'μ₁ is greater than μ₂', left: 'μ₁ is less than μ₂' }[alt] : `μ₁ − μ₂ ${HT_REL[alt]} ${htF(d0)}`,
-        tiles: [['x̄₁ − x̄₂', htF(A.m - B.m)], ['Std error', htF(se)], ['Method', welch ? 'Welch' : 'Pooled']],
-        steps: pre + mid + `<i>t</i> = (<i>x̄</i>₁ − <i>x̄</i>₂ − Δ₀) ÷ SE = (${htF(A.m)} − ${htF(B.m)} − ${htF(d0)}) ÷ ${htF(se)} = <b>${htF(t)}</b><br>df = ${welch ? 'Welch–Satterthwaite = ' + htF(df, 2) : '<i>n</i>₁ + <i>n</i>₂ − 2 = ' + df}`
-      };
-    }
-  },
-  tp: {
-    chip: 'Paired t', group: 'Means', title: 'Paired t test (before and after)', modes: false,
-    fields: { raw: [['x', 'After (or sample 1)', 'data', '8.9 9.6 8.1 10.8 9.5 9.6 9.2 9.4'], ['y', 'Before (or sample 2), same order', 'data', '8.2 9.1 7.8 10.0 8.8 9.4 8.5 9.0'], ['h0', 'Hypothesised mean difference μ_d', 'num', '0']] },
-    run(g) {
-      const a = g.data('x'), b = g.data('y');
-      if (a.length < 2) return { err: 'Enter at least 2 pairs.' };
-      if (a.length !== b.length) return { err: `The two lists must be the same length (now ${a.length} and ${b.length}).` };
-      const d = a.map((v, i) => v - b[i]), D_ = htSum(d), d0 = g.num('h0');
-      if (!(D_.s > 0)) return { err: 'All differences are equal, so s_d = 0 and t cannot be computed.' };
-      if (!Number.isFinite(d0)) return { err: 'Enter the hypothesised mean difference.' };
-      const se = D_.s / Math.sqrt(D_.n), t = (D_.m - d0) / se, df = D_.n - 1;
-      const rows = a.map((v, i) => `<tr><td>${i + 1}</td><td>${htF(v)}</td><td>${htF(b[i])}</td><td>${htF(d[i])}</td></tr>`).join('');
-      return {
-        dist: 't', sym: 't', stat: t, df, param: 'μ_d', h0v: d0,
-        claim: alt => d0 === 0 ? { two: 'there is a real difference between the paired values', right: 'the first measurement is higher on average', left: 'the first measurement is lower on average' }[alt] : `the mean difference ${HT_REL[alt]} ${htF(d0)}`,
-        tiles: [['Mean difference d̄', htF(D_.m)], ['SD of differences', htF(D_.s)], ['Std error', htF(se)]],
-        steps: `<i>d</i> = <i>x</i>₁ − <i>x</i>₂ for each pair<br><i>d̄</i> = Σ<i>d</i> ÷ <i>n</i> = ${htF(D_.sum)} ÷ ${D_.n} = ${htF(D_.m)}<br><i>s</i><sub>d</sub> = ${htF(D_.s)}, &nbsp;SE = <i>s</i><sub>d</sub> ÷ √<i>n</i> = ${htF(se)}<br><i>t</i> = (<i>d̄</i> − μ<sub>d0</sub>) ÷ SE = (${htF(D_.m)} − ${htF(d0)}) ÷ ${htF(se)} = <b>${htF(t)}</b><br>df = <i>n</i> − 1 = ${df}`,
-        extra: `<p class="panel-title" style="margin-top:12px">Differences</p><div class="scroll-x"><table class="mini-table"><thead><tr><th>Pair</th><th>x₁</th><th>x₂</th><th>d = x₁ − x₂</th></tr></thead><tbody>${rows}</tbody></table></div>`
-      };
-    }
-  },
-  p1: {
-    chip: 'One proportion', group: 'Proportions', title: 'z test for one proportion', modes: false,
-    fields: { raw: [['x', 'Number of successes x', 'num', '58'], ['n', 'Sample size n', 'num', '100'], ['h0', 'Hypothesised proportion p₀', 'num', '0.5']] },
-    run(g) {
-      const x = g.num('x'), n = g.num('n'), p0 = g.num('h0');
-      if (!(n >= 1) || !Number.isInteger(n)) return { err: 'n must be a whole number of 1 or more.' };
-      if (!(x >= 0 && x <= n) || !Number.isInteger(x)) return { err: 'x must be a whole number between 0 and n.' };
-      if (!(p0 > 0 && p0 < 1)) return { err: 'p₀ must be between 0 and 1.' };
-      const ph = x / n, se = Math.sqrt(p0 * (1 - p0) / n), z = (ph - p0) / se;
-      const warn = n * p0 < 5 || n * (1 - p0) < 5 ? `n·p₀ = ${htF(n * p0, 2)} and n(1 − p₀) = ${htF(n * (1 - p0), 2)}; both should be at least 5 for the normal approximation.` : '';
-      return {
-        dist: 'z', sym: 'z', stat: z, param: 'p', h0v: p0, subject: 'the population proportion', warn,
-        tiles: [['Sample proportion p̂', htF(ph)], ['Std error', htF(se)]],
-        steps: `<i>p̂</i> = <i>x</i> ÷ <i>n</i> = ${x} ÷ ${n} = ${htF(ph)}<br>SE = √[<i>p</i>₀(1 − <i>p</i>₀) ÷ <i>n</i>] = √[${htF(p0)} × ${htF(1 - p0)} ÷ ${n}] = ${htF(se)}<br><i>z</i> = (<i>p̂</i> − <i>p</i>₀) ÷ SE = (${htF(ph)} − ${htF(p0)}) ÷ ${htF(se)} = <b>${htF(z)}</b>`
-      };
-    }
-  },
-  p2: {
-    chip: 'Two proportions', group: 'Proportions', title: 'z test for two proportions', modes: false,
-    fields: { raw: [['x1', 'Successes x₁', 'num', '45'], ['n1', 'Sample size n₁', 'num', '100'], ['x2', 'Successes x₂', 'num', '30'], ['n2', 'Sample size n₂', 'num', '90']] },
-    run(g) {
-      const x1 = g.num('x1'), n1 = g.num('n1'), x2 = g.num('x2'), n2 = g.num('n2');
-      if (![x1, n1, x2, n2].every(Number.isInteger) || !(n1 >= 1 && n2 >= 1)) return { err: 'All counts must be whole numbers, with n₁ and n₂ at least 1.' };
-      if (!(x1 >= 0 && x1 <= n1 && x2 >= 0 && x2 <= n2)) return { err: 'Each x must be between 0 and its n.' };
-      const p1 = x1 / n1, p2 = x2 / n2, pp = (x1 + x2) / (n1 + n2);
-      if (pp === 0 || pp === 1) return { err: 'The pooled proportion is 0 or 1, so the test cannot be computed.' };
-      const se = Math.sqrt(pp * (1 - pp) * (1 / n1 + 1 / n2)), z = (p1 - p2) / se;
-      const small = [n1 * pp, n1 * (1 - pp), n2 * pp, n2 * (1 - pp)].some(v => v < 5);
-      return {
-        dist: 'z', sym: 'z', stat: z, param: 'p₁ − p₂', h0v: 0, warn: small ? 'Some expected counts (n·p̂, n(1 − p̂)) are below 5, so the normal approximation may be poor.' : '',
-        claim: alt => ({ two: 'the two population proportions differ', right: 'p₁ is greater than p₂', left: 'p₁ is less than p₂' })[alt],
-        tiles: [['p̂₁', htF(p1)], ['p̂₂', htF(p2)], ['Pooled p̂', htF(pp)]],
-        steps: `<i>p̂</i>₁ = ${x1} ÷ ${n1} = ${htF(p1)}, &nbsp;<i>p̂</i>₂ = ${x2} ÷ ${n2} = ${htF(p2)}<br>Pooled <i>p̂</i> = (<i>x</i>₁ + <i>x</i>₂) ÷ (<i>n</i>₁ + <i>n</i>₂) = ${x1 + x2} ÷ ${n1 + n2} = ${htF(pp)}<br>SE = √[<i>p̂</i>(1 − <i>p̂</i>)(1/<i>n</i>₁ + 1/<i>n</i>₂)] = ${htF(se)}<br><i>z</i> = (<i>p̂</i>₁ − <i>p̂</i>₂) ÷ SE = (${htF(p1)} − ${htF(p2)}) ÷ ${htF(se)} = <b>${htF(z)}</b>`
-      };
-    }
-  },
-  chi: {
-    chip: 'χ² independence', group: 'Others', title: 'Chi-square test of independence', modes: false, right: true,
-    fields: { raw: [['tab', 'Observed counts: one row per line, columns separated by spaces', 'data', '30 20\n25 35\n15 40', 'R|C']] },
-    run(g) {
-      const O = htLines(g.str('tab'));
-      if (O.length < 2) return { err: 'Enter at least 2 rows.' };
-      const c = O[0].length;
-      if (c < 2 || O.some(r => r.length !== c)) return { err: 'Every row needs the same number of columns (at least 2).' };
-      if (O.some(r => r.some(v => v < 0))) return { err: 'Counts cannot be negative.' };
-      const R = O.map(r => S.sum(r)), C = O[0].map((_, j) => S.sum(O.map(r => r[j]))), N = S.sum(R);
-      if (R.some(v => v === 0) || C.some(v => v === 0)) return { err: 'A row or column total is 0. Remove it and try again.' };
-      const E = O.map((r, i) => r.map((_, j) => R[i] * C[j] / N));
-      let chi = 0; O.forEach((r, i) => r.forEach((o, j) => { chi += (o - E[i][j]) ** 2 / E[i][j]; }));
-      const df = (O.length - 1) * (c - 1), low = E.flat().filter(e => e < 5).length;
-      const head = `<tr><th></th>${C.map((_, j) => `<th>Col ${j + 1}</th>`).join('')}<th>Total</th></tr>`;
-      const body = O.map((r, i) => `<tr><td>Row ${i + 1}</td>${r.map((o, j) => `<td>${htF(o)} <span style="color:var(--muted)">(${htF(E[i][j], 2)})</span></td>`).join('')}<td>${htF(R[i])}</td></tr>`).join('');
-      return {
-        dist: 'chi', sym: 'χ²', stat: chi, df,
-        h0: 'H₀: the two variables are independent', h1: 'H₁: the two variables are associated',
-        claim: () => 'the two variables are associated (not independent)',
-        warn: low ? `${low} expected count${low > 1 ? 's are' : ' is'} below 5; the chi-square approximation may be unreliable.` : '',
-        tiles: [['Rows × columns', `${O.length} × ${c}`], ['Grand total', htF(N)]],
-        steps: `<i>E</i> = (row total × column total) ÷ grand total<br>χ² = Σ (<i>O</i> − <i>E</i>)² ÷ <i>E</i> = <b>${htF(chi)}</b><br>df = (<i>r</i> − 1)(<i>c</i> − 1) = (${O.length} − 1)(${c} − 1) = ${df}`,
-        extra: `<p class="panel-title" style="margin-top:12px">Observed counts (expected in brackets)</p><div class="scroll-x"><table class="mini-table"><thead>${head}</thead><tbody>${body}</tbody><tfoot><tr><td>Total</td>${C.map(v => `<td>${htF(v)}</td>`).join('')}<td>${htF(N)}</td></tr></tfoot></table></div>`
-      };
-    }
-  },
-  rbd: {
-    chip: 'RBD', group: 'Others', title: 'Randomised block design (RBD) ANOVA', modes: false, right: true,
-    fields: { raw: [['tab', 'Data: one treatment per row, one block per column', 'data', '4.2 4.8 3.9\n5.0 5.6 4.6\n4.9 4.7 4.4\n5.5 6.1 5.0', 'T|B']] },
-    run(g) {
-      const X = htLines(g.str('tab'));
-      if (X.length < 2) return { err: 'Enter at least 2 treatments, one per row.' };
-      const r = X[0].length;
-      if (r < 2 || X.some(row => row.length !== r)) return { err: 'Every treatment needs the same number of blocks (at least 2), one value per block.' };
-      const t = X.length, N = t * r, G = S.sum(X.flat()), CF = G * G / N;
-      const Ti = X.map(row => S.sum(row)), Bj = X[0].map((_, j) => S.sum(X.map(row => row[j])));
-      const sst = X.flat().reduce((q, x) => q + x * x, 0) - CF;
-      const sstr = Ti.reduce((q, v) => q + v * v, 0) / r - CF;
-      const ssb = Bj.reduce((q, v) => q + v * v, 0) / t - CF;
-      const sse = sst - sstr - ssb;
-      const dft = t - 1, dfb = r - 1, dfe = (t - 1) * (r - 1);
-      const mst = sstr / dft, msb = ssb / dfb, mse = sse / dfe;
-      if (!(mse > 1e-12)) return { err: 'The error mean square is 0, so F cannot be computed.' };
-      const Ft = mst / mse, Fb = msb / mse;
-      const pt = 1 - D.fCDF(Ft, dft, dfe), pb = 1 - D.fCDF(Fb, dfb, dfe);
-      const a = HT.alpha, ct = D.fInv(1 - a, dft, dfe), cb = D.fInv(1 - a, dfb, dfe);
-      const row = (src, df, ss, ms, F, p, c, cls = '') => `<tr${cls}><td>${src}</td><td>${df}</td><td>${htF(ss)}</td><td>${ms === '' ? '' : htF(ms)}</td><td>${F === '' ? '' : htF(F)}</td><td>${c === '' ? '' : htF(c, 3)}</td><td>${p === '' ? '' : htP(p)}</td></tr>`;
-      return {
-        dist: 'F', sym: 'F', stat: Ft, df: dft, df2: dfe, statLabel: 'F for treatments',
-        table: `<p class="panel-title">ANOVA table (RBD)</p><div class="scroll-x"><table class="mini-table"><thead><tr><th>Source</th><th>df</th><th>SS</th><th>MS</th><th>F (calculated)</th><th>F (${a * 100}%)</th><th>p-value</th></tr></thead><tbody>
-          ${row('Blocks', dfb, ssb, msb, Fb, pb, cb)}
-          ${row('Treatments', dft, sstr, mst, Ft, pt, ct, ' class="ht-main"')}
-          ${row('Error', dfe, sse, mse, '', '', '')}
-          </tbody><tfoot>${row('Total', N - 1, sst, '', '', '', '')}</tfoot></table></div>
-          <p class="sub" style="margin-top:6px">${t} treatments × ${r} blocks · CF = G² ÷ tr = ${htF(G)}² ÷ ${N} = ${htF(CF)}</p>`
-      };
-    }
-  },
-  anova: {
-    chip: 'One-way ANOVA (CRD)', group: 'Others', title: 'One-way ANOVA / completely randomised design (CRD)', modes: false, right: true,
-    fields: { raw: [['groups', 'Data: one treatment per row (replications may differ)', 'data', '20 22 19 24 21\n25 27 24 26 28\n22 21 23 20 24', 'T']] },
-    run(g) {
-      const G = htLines(g.str('groups'));
-      if (G.length < 2) return { err: 'Enter at least 2 treatments, one per row.' };
-      const k = G.length, N = G.reduce((s, r) => s + r.length, 0);
-      if (N - k < 1) return { err: 'Some treatments need more than one value.' };
-      const sums = G.map(htSum), gm = S.sum(G.flat()) / N;
-      const ssb = sums.reduce((s, t) => s + t.n * (t.m - gm) ** 2, 0);
-      const ssw = G.reduce((s, r, i) => s + r.reduce((q, x) => q + (x - sums[i].m) ** 2, 0), 0);
-      const d1 = k - 1, d2 = N - k, msb = ssb / d1, msw = ssw / d2;
-      if (!(msw > 0)) return { err: 'There is no variation within groups, so F cannot be computed.' };
-      const F = msb / msw, p = 1 - D.fCDF(F, d1, d2);
-      const grp = sums.map((t, i) => `<tr><td>Group ${i + 1}</td><td>${t.n}</td><td>${htF(t.m)}</td><td>${htF(t.s)}</td></tr>`).join('');
-      return {
-        dist: 'F', sym: 'F', stat: F, df: d1, df2: d2, statLabel: 'F for treatments',
-        table: (() => {
-          const a = HT.alpha, cF = D.fInv(1 - a, d1, d2), G = 0;
-          return `<p class="panel-title">ANOVA table (CRD)</p><div class="scroll-x"><table class="mini-table"><thead><tr><th>Source</th><th>df</th><th>SS</th><th>MS</th><th>F (calculated)</th><th>F (${a * 100}%)</th><th>p-value</th></tr></thead><tbody>
-            <tr class="ht-main"><td>Treatments</td><td>${d1}</td><td>${htF(ssb)}</td><td>${htF(msb)}</td><td>${htF(F)}</td><td>${htF(cF, 3)}</td><td>${htP(p)}</td></tr>
-            <tr><td>Error</td><td>${d2}</td><td>${htF(ssw)}</td><td>${htF(msw)}</td><td></td><td></td><td></td></tr>
-            </tbody><tfoot><tr><td>Total</td><td>${N - 1}</td><td>${htF(ssb + ssw)}</td><td></td><td></td><td></td><td></td></tr></tfoot></table></div>
-            <p class="sub" style="margin-top:6px">${k} treatments · replications: ${sums.map(t => t.n).join(', ')} · N = ${N} · grand mean = ${htF(gm)}</p>`;
-        })()
-      };
-    }
-  }
-};
-const toSub = n => String(n).split('').map(c => '₀₁₂₃₄₅₆₇₈₉'[+c]).join('');
-const htP = p => !Number.isFinite(p) ? '—' : p < 0.0001 ? '< 0.0001' : p.toFixed(4);
-
-const HT = { test: 't1', mode: { z1: 'summary', t1: 'raw', t2: 'raw' }, alt: 'two', alpha: 0.05, v: {} };
-const htVal = (id, def) => { const k = HT.test + '.' + id; return k in HT.v ? HT.v[k] : def; };
-function htFields() { const T = HT_TESTS[HT.test]; return T.fields[T.modes ? HT.mode[HT.test] : 'raw']; }
-
-function htBuildPick() {
-  const groups = [...new Set(Object.values(HT_TESTS).map(t => t.group))];
-  $('#htPick').innerHTML = groups.map(gname => `<div class="ht-pick-g"><span class="group-label">${gname}</span>${Object.entries(HT_TESTS).filter(([, t]) => t.group === gname).map(([k, t]) => `<button class="chip-btn" type="button" data-httest="${k}" aria-pressed="${k === HT.test}">${t.chip}</button>`).join('')}</div>`).join('');
-}
-function htBuildForm() {
-  const T = HT_TESTS[HT.test];
-  $('#htTitle').textContent = T.title;
-  $('#htMode').hidden = !T.modes;
-  if (T.modes) $$('[data-htmode]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.htmode === HT.mode[HT.test])));
-  $('#htAltWrap').hidden = !!T.right;
-  $$('[data-httest]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.httest === HT.test)));
-  $('#htForm').innerHTML = htFields().map(([id, label, type, def, opts]) => {
-    const v = htVal(id, def);
-    if (type === 'data' && opts) { const [rp, cp] = opts.split('|'); return `<label class="field wide" for="ht-${id}">${label}<span class="ruled" data-pre="${rp}" data-col="${cp || ''}">${cp ? '<span class="colhead" aria-hidden="true"></span>' : ''}<span class="ruled-box"><span class="gutter" aria-hidden="true"></span><textarea id="ht-${id}" data-htf="${id}" spellcheck="false" wrap="off" rows="${Math.max(4, String(v).split('\n').length + 1)}">${escapeHtml(v)}</textarea></span></span></label>`; }
-    if (type === 'data') return `<label class="field wide" for="ht-${id}">${label}<textarea id="ht-${id}" data-htf="${id}" spellcheck="false" rows="${Math.max(2, String(v).split('\n').length)}">${escapeHtml(v)}</textarea></label>`;
-    if (type === 'sel') return `<label class="field" for="ht-${id}">${label}<select id="ht-${id}" data-htf="${id}">${opts.map(([ov, ol]) => `<option value="${ov}"${ov === v ? ' selected' : ''}>${ol}</option>`).join('')}</select></label>`;
-    return `<label class="field" for="ht-${id}">${label}<input type="number" step="any" id="ht-${id}" data-htf="${id}" value="${escapeHtml(v)}"></label>`;
-  }).join('');
-  $$('#htForm .ruled').forEach(b => { htAlign(b); htGutter(b); });
-}
-// row labels (T1, T2 … or R1, R2 …) beside each line of a ruled data box, and column labels (B1, B2 … or C1, C2 …) above it
-const htToks = l => l.split(/[\s,;]+/).filter(Boolean);
-let htCharW = 0;
-function htCw(ta) {
-  if (htCharW) return htCharW;
-  const m = document.createElement('span'), cs = getComputedStyle(ta);
-  m.style.cssText = `position:absolute;visibility:hidden;white-space:pre;font:${cs.font}`;
-  m.textContent = '0'.repeat(20); document.body.appendChild(m);
-  htCharW = m.getBoundingClientRect().width / 20; m.remove();
-  return htCharW;
-}
-// rewrite the box so every value starts in its own fixed-width column
-function htAlign(box) {
-  if (!box.dataset.col) return;
-  const ta = box.querySelector('textarea');
-  const rows = ta.value.split('\n').map(htToks).filter(r => r.length);
-  if (!rows.length) return;
-  const w = Math.max(5, ...rows.flat().map(t => t.length + 2));
-  const v = rows.map(r => r.map((t, i) => i < r.length - 1 ? t.padEnd(w) : t).join('')).join('\n');
-  box.dataset.w = w;
-  if (v !== ta.value) { ta.value = v; HT.v[HT.test + '.' + ta.dataset.htf] = v; ta.rows = Math.max(4, rows.length + 1); }
-}
-function htGutter(box) {
-  const ta = box.querySelector('textarea'), g = box.querySelector('.gutter'), pre = box.dataset.pre, cp = box.dataset.col;
-  const lines = ta.value.split('\n'), n = Math.max(lines.length, ta.rows);
-  const counts = lines.map(l => htToks(l).length), maxC = Math.max(0, ...counts);
-  // the first three rows are always labelled, so T1, T2, T3 show even in an empty box
-  const last = counts.reduce((m, c, i) => c ? i : m, -1), nLab = Math.max(3, last + 1);
-  g.innerHTML = Array.from({ length: n }, (_, i) => {
-    const c = counts[i] || 0, bad = cp && c && c !== maxC;
-    return `<span class="${c ? '' : 'off'}${bad ? ' bad' : ''}"${bad ? ` title="This line has ${c} values; the others have ${maxC}"` : ''}>${i < nLab ? pre + (i + 1) : ''}</span>`;
-  }).join('');
-  g.scrollTop = ta.scrollTop;
-  ta.classList.toggle('has-bad', !!cp && counts.some(c => c && c !== maxC));
-  if (cp) {
-    const h = box.querySelector('.colhead'), w = +box.dataset.w || 6, cw = htCw(ta);
-    h.innerHTML = Array.from({ length: maxC }, (_, i) => `<span style="left:${47 + i * w * cw - ta.scrollLeft}px">${cp}${i + 1}</span>`).join('');
-  }
-}
-function htRun() {
-  const T = HT_TESTS[HT.test];
-  const defs = Object.fromEntries(htFields().map(f => [f[0], f[3]]));
-  const raw = id => htVal(id, defs[id]);
-  const g = { num: id => { const s = String(raw(id)).trim(); return s === '' ? NaN : Number(s); }, data: id => parseData(String(raw(id))).vals, str: id => String(raw(id)) };
-  const r = T.run(g, T.modes ? HT.mode[HT.test] : 'raw');
-  const out = $('#htOut');
-  $('#htErr').textContent = r.err || '';
-  out.classList.toggle('is-empty', !!r.err);
-  if (r.err) { $('#htTable').innerHTML = ''; return; }
-  const alt = T.right ? 'right' : HT.alt, a = HT.alpha;
-  const q = p => r.dist === 'z' ? D.invPhi(p) : r.dist === 't' ? D.tInv(p, r.df) : r.dist === 'chi' ? D.chi2Inv(p, r.df) : D.fInv(p, r.df, r.df2);
-  const cdf = x => r.dist === 'z' ? D.Phi(x) : r.dist === 't' ? D.tCDF(x, r.df) : r.dist === 'chi' ? D.chi2CDF(x, r.df) : D.fCDF(x, r.df, r.df2);
-  const Fx = cdf(r.stat);
-  const p = alt === 'two' ? Math.min(1, 2 * Math.min(Fx, 1 - Fx)) : alt === 'right' ? 1 - Fx : Fx;
-  const c = alt === 'two' ? q(1 - a / 2) : alt === 'right' ? q(1 - a) : -q(1 - a);
-  const cTxt = alt === 'two' ? '±' + htF(c, 3) : htF(c, 3);
-  $('#htTable').innerHTML = r.table || '';
-  $('#htTiles').innerHTML = [[r.statLabel || `Test statistic ${r.sym}`, htF(r.stat), 'mode'], ['p-value', htP(p), ''], [`Critical value (α = ${a})`, cTxt, 'spread']]
-    .map(([k, v, cls]) => `<div class="res-card ${cls}"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('');
-  htPlot({ ...r, alt, a, c, p });
-}
-function htPlot(r) {
-  const svg = $('#htSvg'), wrap = $('#htPlotWrap');
-  svg.replaceChildren();
-  const W = Math.max(300, Math.round(wrap.clientWidth)), H = 254, padL = 14, padR = 14, top = 30, base = 186;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H);
-  const sym = r.dist === 'z' || r.dist === 't';
-  const pdf = r.dist === 'z' ? D.phi : r.dist === 't' ? x => D.tPdf(x, r.df) : r.dist === 'chi' ? x => D.chi2Pdf(x, r.df) : x => D.fPdf(x, r.df, r.df2);
-  let x0, x1;
-  if (sym) { const L = Math.min(9, Math.max(4, Math.abs(r.stat) + 0.8, Math.abs(r.c) + 1)); x0 = -L; x1 = L; }
-  else {
-    x0 = 0;
-    x1 = Math.max(r.dist === 'chi' ? D.chi2Inv(0.995, r.df) : D.fInv(0.99, r.df, r.df2), r.c * 1.3);
-    if (r.stat > x1) x1 = Math.min(r.stat * 1.1, x1 * 3);
-  }
-  const X = v => padL + (v - x0) / (x1 - x0) * (W - padL - padR);
-  const f = v => pdf(sym ? v : Math.max(v, 1e-9));
-  const N = 260, pts = [];
-  for (let i = 0; i <= N; i++) { const v = x0 + (x1 - x0) * i / N; pts.push([v, f(v)]); }
-  const spike = (r.dist === 'chi' || r.dist === 'F') && r.df < 2;
-  const ymax = Math.max(...pts.filter(([v]) => !spike || v >= x0 + (x1 - x0) * 0.03).map(p => p[1]).filter(Number.isFinite)) * 1.08;
-  const Y = d => Math.max(top - 8, base - Math.min(d, ymax * 1.1) / ymax * (base - top));
-  const area = (a, b) => {
-    a = clamp(a, x0, x1); b = clamp(b, x0, x1); if (b <= a) return '';
-    let d = `M${X(a).toFixed(1)} ${base}`;
-    const n = Math.max(2, Math.ceil((X(b) - X(a)) / 2));
-    for (let i = 0; i <= n; i++) { const v = a + (b - a) * i / n; d += ` L${X(v).toFixed(1)} ${Y(f(v)).toFixed(1)}`; }
-    return d + ` L${X(b).toFixed(1)} ${base} Z`;
-  };
-  const regions = r.alt === 'two' ? [[x0, -r.c], [r.c, x1]] : r.alt === 'right' ? [[r.c, x1]] : [[x0, r.c]];
-  regions.forEach(([a, b]) => { const d = area(a, b); if (d) el('path', { d, class: 'ht-rej' }, svg); });
-  el('path', { d: 'M' + pts.map(([v, d]) => `${X(v).toFixed(1)} ${Y(d).toFixed(1)}`).join(' L'), class: 'curve' }, svg);
-  el('line', { x1: padL, x2: W - padR, y1: base, y2: base, class: 'ax-line' }, svg);
-  const step = sym ? (x1 - x0 > 12 ? 2 : 1) : niceStep((x1 - x0) / 6);
-  for (let t = Math.ceil(x0 / step) * step; t <= x1 + 1e-9; t += step) {
-    el('line', { x1: X(t), x2: X(t), y1: base, y2: base + 5, class: 'ax-tick' }, svg);
-    svgText(svg, X(t), base + 18, fmt(t, 2), 'ax-label');
-  }
-  // critical values
-  const cs = r.alt === 'two' ? [-r.c, r.c] : [r.c];
-  cs.forEach(cv => {
-    if (cv < x0 || cv > x1) return;
-    el('line', { x1: X(cv), x2: X(cv), y1: Y(f(cv)), y2: base, class: 'ht-crit' }, svg);
-    svgText(svg, X(cv), base + 36, htF(cv, 3), 't-out halo');
-  });
-  const aLab = r.alt === 'two' ? `α/2 = ${+(r.a / 2).toPrecision(3)}` : `α = ${r.a}`;
-  regions.forEach(([a, b]) => {
-    const mid = (clamp(a, x0, x1) + clamp(b, x0, x1)) / 2, px = clamp(X(mid), 40, W - 40);
-    svgText(svg, px, base - 8, aLab, 'ht-alab halo');
-  });
-  // test statistic
-  const off = r.stat < x0 || r.stat > x1, sv = clamp(r.stat, x0, x1), sx = X(sv);
-  el('line', { x1: sx, x2: sx, y1: top - 6, y2: base, class: 'ht-stat' }, svg);
-  svgText(svg, clamp(sx, 50, W - 50), 16, `${r.sym} = ${htF(r.stat, 3)}${off ? (r.stat > x1 ? ' →' : ' ←') : ''}`, 't-mean halo');
-  svgText(svg, padL, H - 4, 'Shaded: rejection region', 't-muted', 'start');
-}
-htBuildPick(); htBuildForm(); htRun();
-$('#htPick').addEventListener('click', e => { const b = e.target.closest('[data-httest]'); if (!b) return; HT.test = b.dataset.httest; htBuildForm(); htRun(); });
-$$('[data-htmode]').forEach(b => b.addEventListener('click', () => { HT.mode[HT.test] = b.dataset.htmode; htBuildForm(); htRun(); }));
-$$('[data-htalt]').forEach(b => b.addEventListener('click', () => { HT.alt = b.dataset.htalt; $$('[data-htalt]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); htRun(); }));
-$('#htAlpha').addEventListener('change', e => { HT.alpha = +e.target.value; htRun(); });
-let htT;
-$('#htForm').addEventListener('scroll', e => { const box = e.target.closest && e.target.closest('.ruled'); if (box) htGutter(box); }, true);
-$('#htForm').addEventListener('focusout', e => { const box = e.target.closest && e.target.closest('.ruled'); if (box) { htAlign(box); htGutter(box); } });
-$('#htForm').addEventListener('input', e => {
-  const f = e.target.closest('[data-htf]'); if (!f) return;
-  HT.v[HT.test + '.' + f.dataset.htf] = f.value;
-  if (f.tagName === 'TEXTAREA') { const box = f.closest('.ruled'); if (box && e.inputType === 'insertFromPaste') { htAlign(box); f.setSelectionRange(f.value.length, f.value.length); } f.rows = box ? Math.max(4, f.value.split('\n').length + 1) : Math.max(2, f.value.split('\n').length); if (box) htGutter(box); }
-  clearTimeout(htT); htT = setTimeout(htRun, 120);
-});
-
-
-/* ================= Correlation and regression ================= */
-const rgX = $('#rgX'), rgY = $('#rgY');
-// average ranks, so tied values share a rank
-function ranks(a) {
-  const idx = a.map((v, i) => [v, i]).sort((p, q) => p[0] - q[0]), r = new Array(a.length);
-  for (let i = 0; i < idx.length;) {
-    let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++;
-    const avg = (i + j) / 2 + 1; for (let k = i; k <= j; k++) r[idx[k][1]] = avg; i = j + 1;
-  }
-  return r;
-}
-function pearson(x, y) {
-  const n = x.length, mx = S.mean(x), my = S.mean(y);
-  let sxx = 0, syy = 0, sxy = 0;
-  for (let i = 0; i < n; i++) { const dx = x[i] - mx, dy = y[i] - my; sxx += dx * dx; syy += dy * dy; sxy += dx * dy; }
-  return { n, mx, my, sxx, syy, sxy, r: sxy / Math.sqrt(sxx * syy) };
-}
-const eq = (lhs, a, b, v) => `${lhs} = ${fmt(a, 4)} ${b < 0 ? '−' : '+'} ${fmt(Math.abs(b), 4)}${v}`;
-let rgLast = null;
-function rgRun() {
-  const x = parseData(rgX.value).vals, y = parseData(rgY.value).vals, err = $('#rgErr');
-  const badge = $('#rgCount');
-  badge.textContent = x.length || y.length ? (x.length === y.length ? `n = ${x.length}` : `X: ${x.length} · Y: ${y.length}`) : '';
-  badge.classList.toggle('warn', x.length !== y.length);
-  let msg = '';
-  if (x.length !== y.length) msg = `X and Y must have the same number of values (now ${x.length} and ${y.length}).`;
-  else if (x.length < 3) msg = 'Enter at least 3 pairs.';
-  const P = msg ? null : pearson(x, y);
-  if (P && (P.sxx === 0 || P.syy === 0)) msg = `All ${P.sxx === 0 ? 'X' : 'Y'} values are equal, so the correlation cannot be computed.`;
-  err.textContent = msg;
-  $('#regression .ht-out').classList.toggle('is-empty', !!msg);
-  if (msg) { rgLast = null; return; }
-  const { n, mx, my, sxx, syy, sxy, r } = P;
-  const b = sxy / sxx, a = my - b * mx, d = sxy / syy, c = mx - d * my, r2 = r * r, df = n - 2;
-  const sse = Math.max(0, syy - b * sxy), see = df > 0 ? Math.sqrt(sse / df) : NaN;
-  const t = Math.abs(r) >= 1 ? (r > 0 ? Infinity : -Infinity) : r * Math.sqrt(df) / Math.sqrt(1 - r2);
-  const p = !Number.isFinite(t) ? 0 : 2 * (1 - D.tCDF(Math.abs(t), df));
-  const rho = pearson(ranks(x), ranks(y)).r;
-  const x0 = parseFloat($('#rgX0').value), yhat = a + b * x0;
-  const card = (k, v, cls = '', wide = false) => `<div class="res-card ${cls}${wide ? ' wide' : ''}"><div class="k">${k}</div><div class="v">${v}</div></div>`;
-  $('#rgTiles').innerHTML = [
-    card("Pearson's r", fmt(r, 4), 'mean'), card('R² (coeff. of determination)', fmt(r2, 4), 'mean'), card("Spearman's ρ", fmt(rho, 4), 'median'),
-    card(`t for H₀: ρ = 0 (df = ${df})`, Number.isFinite(t) ? fmt(t, 4) : '∞', 'mode'), card('p-value', htP(p), ''), card('Std error of estimate', fmt(see, 4), 'spread'),
-    card('Regression of Y on X', eq('ŷ', a, b, 'x'), 'mean', true), ...($('#rgXonY').checked ? [card('Regression of X on Y', eq('x̂', c, d, 'y'), 'median', true)] : []),
-    card(Number.isFinite(x0) ? `Predicted ŷ at x = ${fmt(x0, 4)}` : 'Predicted ŷ', Number.isFinite(x0) ? fmt(yhat, 4) : '—', '', true)
-  ].join('');
-  rgLast = { x, y, a, b, c, d, mx, my };
-  rgPlot();
-}
-function rgPlot() {
-  if (!rgLast) return;
-  const { x, y, a, b, c, d, mx, my } = rgLast, svg = $('#rgSvg'), wrap = $('#rgWrap');
-  svg.replaceChildren();
-  const W = Math.max(300, Math.round(wrap.clientWidth)), H = 300, padL = 46, padR = 14, top = 14, padB = 40;
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.setAttribute('height', H);
-  const span = (lo, hi) => { const pad = (hi - lo || Math.abs(hi) || 1) * 0.08; return [lo - pad, hi + pad]; };
-  const [x0, x1] = span(Math.min(...x), Math.max(...x)), [y0, y1] = span(Math.min(...y), Math.max(...y));
-  const X = v => padL + (v - x0) / (x1 - x0) * (W - padL - padR), Y = v => H - padB - (v - y0) / (y1 - y0) * (H - padB - top);
-  const tick = (lo, hi) => { const st = niceStep((hi - lo) / 5), out = []; for (let v = Math.ceil(lo / st) * st; v <= hi + 1e-9; v += st) out.push(+v.toPrecision(10)); return out; };
-  tick(y0, y1).forEach(v => { el('line', { x1: padL, x2: W - padR, y1: Y(v), y2: Y(v), class: 'gridline' }, svg); svgText(svg, padL - 6, Y(v) + 4, fmt(v, 3), 'bar-label', 'end'); });
-  tick(x0, x1).forEach(v => { el('line', { x1: X(v), x2: X(v), y1: H - padB, y2: H - padB + 5, class: 'ax-tick' }, svg); svgText(svg, X(v), H - padB + 18, fmt(v, 3), 'bar-label'); });
-  el('line', { x1: padL, x2: W - padR, y1: H - padB, y2: H - padB, class: 'ax-line' }, svg);
-  el('line', { x1: padL, x2: padL, y1: top, y2: H - padB, class: 'ax-line' }, svg);
-  svgText(svg, (padL + W - padR) / 2, H - 4, 'X', 't-muted');
-  svgText(svg, 12, top + 8, 'Y', 't-muted', 'start');
-  // clip lines to the plot box
-  const clip = 'rgClip';
-  const defs = el('defs', null, svg), cp = el('clipPath', { id: clip }, defs);
-  el('rect', { x: padL, y: top, width: W - padL - padR, height: H - padB - top }, cp);
-  const g = el('g', { 'clip-path': `url(#${clip})` }, svg);
-  el('line', { x1: X(x0), y1: Y(a + b * x0), x2: X(x1), y2: Y(a + b * x1), class: 'rg-yx' }, g);
-  const both = $('#rgXonY').checked;
-  if (both && Math.abs(d) > 1e-12) el('line', { x1: X(c + d * y0), y1: Y(y0), x2: X(c + d * y1), y2: Y(y1), class: 'rg-lxy' }, g);
-  x.forEach((v, i) => el('circle', { cx: X(v), cy: Y(y[i]), r: 5, class: 'rg-pt' }, svg));
-  el('circle', { cx: X(mx), cy: Y(my), r: 4.5, class: 'rg-mean' }, svg);
-  const lg = el('g', null, svg), lx = padL + 10;
-  [['rg-yx', 'Y on X'], ...(both ? [['rg-lxy', 'X on Y']] : [])].forEach(([cls, t], i) => {
-    el('line', { x1: lx + i * 92, x2: lx + i * 92 + 20, y1: top + 8, y2: top + 8, class: cls }, lg);
-    svgText(lg, lx + i * 92 + 25, top + 12, t, 't-muted halo', 'start');
-  });
-}
-rgRun();
-let rgT;
-[rgX, rgY, $('#rgX0')].forEach(f => f.addEventListener('input', () => { clearTimeout(rgT); rgT = setTimeout(rgRun, 120); }));
-$('#rgXonY').addEventListener('change', rgRun);
-// two columns pasted into the X box: split them into X and Y
-rgX.addEventListener('paste', e => {
-  const text = (e.clipboardData || window.clipboardData)?.getData('text') || '';
-  const rows = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => l.split(/[\t,; ]+/).filter(Boolean));
-  if (rows.length >= 2 && rows.every(r => r.length === 2)) {
-    const nums = rows.filter(r => r.every(v => Number.isFinite(Number(v))));
-    if (nums.length >= 2) {
-      e.preventDefault();
-      rgX.value = nums.map(r => r[0]).join(' '); rgY.value = nums.map(r => r[1]).join(' ');
-      rgRun(); toast(`Two columns found: ${nums.length} pairs split into X and Y`);
-    }
-  }
-});
-
-/* ================= Views + ☰ drawer ================= */
-const VIEWS = { calculator: 'Descriptive statistics', tests: 'Hypothesis tests', regression: 'Correlation and regression', playground: 'Playground', normal: 'Normal curve', tables: 'Stat tables', videos: 'Videos', concepts: 'Concepts' };
-const drawer = $('#drawer'), drawerBack = $('#drawerBack'), drawerBtn = $('#drawerBtn');
+/* ================= Views ================= */
+const VIEWS = { playground: 'Playground', normal: 'Normal curve', tables: 'Statistical Tables', concepts: 'Concepts' };
 function showView(id) {
-  if (!VIEWS[id]) id = 'calculator';
+  if (!VIEWS[id]) id = 'tables';
   Object.keys(VIEWS).forEach(v => { document.getElementById(v).hidden = v !== id; });
-  $$('#drawer nav a, .main-tabs a').forEach(a => { if (a.dataset.view === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  $$('#siteMenu a[data-view], .main-tabs a').forEach(a => { if (a.dataset.view === id) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
   window.scrollTo(0, 0);
   requestAnimationFrame(() => {
     if (id === 'playground') pgRender();
-    else if (id === 'calculator' && calcLast) calcChart(calcLast);
     else if (id === 'normal') neRender();
-    else if (id === 'tests') htRun();
-    else if (id === 'regression') rgPlot();
     syncSubTabs();
   });
 }
@@ -2908,23 +1729,6 @@ function goTo(id) {
   if (location.hash === '#' + id) showView(id);
   else location.hash = id;
 }
-function openDrawer() {
-  drawer.classList.add('open'); drawerBack.classList.add('open');
-  drawer.setAttribute('aria-hidden', 'false'); drawerBtn.setAttribute('aria-expanded', 'true');
-  const cur = drawer.querySelector('[aria-current="page"]') || drawer.querySelector('nav a');
-  setTimeout(() => cur && cur.focus(), 30);
-}
-function closeDrawer(refocus) {
-  if (!drawer.classList.contains('open')) return;
-  drawer.classList.remove('open'); drawerBack.classList.remove('open');
-  drawer.setAttribute('aria-hidden', 'true'); drawerBtn.setAttribute('aria-expanded', 'false');
-  if (refocus) drawerBtn.focus();
-}
-drawerBtn.addEventListener('click', openDrawer);
-$('#drawerClose').addEventListener('click', () => closeDrawer(true));
-drawerBack.addEventListener('click', () => closeDrawer(true));
-drawer.addEventListener('click', e => { const a = e.target.closest('a[data-view]'); if (a) { closeDrawer(false); if (location.hash === '#' + a.dataset.view) { e.preventDefault(); showView(a.dataset.view); } } });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('open')) closeDrawer(true); });
 window.addEventListener('hashchange', () => showView(location.hash.slice(1)));
 
 
@@ -2947,7 +1751,7 @@ function setTheme(t, save) {
   b.title = dark ? 'Light mode' : 'Dark mode';
   if (save) { try { localStorage.setItem('abcstatlab-theme', t); } catch (_) {} }
   // charts read colours when drawn, so redraw the visible ones
-  requestAnimationFrame(() => { try { pgRender(); neRender(); if (calcLast) calcChart(calcLast); if (!$('#tests').hidden) htRun(); if (!$('#regression').hidden) rgPlot(); } catch (_) {} });
+  requestAnimationFrame(() => { try { pgRender(); neRender(); } catch (_) {} });
 }
 // first visit: follow the phone or computer setting; after a click, remember the choice
 let savedTheme = null;
@@ -2961,7 +1765,6 @@ const menuBtn = $('#menuBtn'), menu = $('#siteMenu');
 const siteUrl = () => (location.protocol.startsWith('http') ? location.origin + location.pathname : location.href.split('#')[0]);
 function openMenu() {
   const u = encodeURIComponent(siteUrl());
-  menu.querySelector('[data-menu="facebook"]').href = 'https://www.facebook.com/sharer/sharer.php?u=' + u;
   menu.querySelector('[data-menu="whatsapp"]').href = 'https://wa.me/?text=' + encodeURIComponent('ABC Stat Lab: interactive statistics ' + siteUrl());
   menu.hidden = false; menuBtn.setAttribute('aria-expanded', 'true');
   const first = menu.querySelector('.menu-item'); if (first) first.focus();
@@ -2980,25 +1783,18 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = fal
 const MODALS = {
   help: ['How to use ABC Stat Lab', `
     <ul>
-      <li><b>Descriptive statistics calculator (home page):</b> type or paste numbers separated by spaces, commas or new lines, or upload an Excel / CSV file. Pick which results you need under "Choose which results to show", switch between sample and population formulas, and open "Show the working" for the step-by-step solution.</li>
-      <li><b>Tabs under the title:</b> Descriptive statistics, Hypothesis tests, Correlation &amp; regression and Stat tables.</li>
-      <li><b>☰ menu (top left):</b> learning pages: Concepts, Playground, Normal curve and Videos. Click the ABC Stat Lab logo to come back to the calculator.</li>
-      <li><b>Hypothesis tests:</b> pick a test, enter raw data or summary statistics, and choose H₁ and α to get the test statistic, p-value, critical value and rejection region.</li>
+      <li><b>Tab under the title:</b> Statistical Tables (the home page).</li>
+      <li><b>☰ menu (top right):</b> learning pages (Concepts, Playground, Normal curve) and sharing. Click the ABC Stat Lab logo to come back to the Statistical Tables.</li>
       <li><b>Concepts:</b> each card's button opens the idea in the matching tool.</li>
       <li><b>Playground:</b> drag a dot, scroll over it to nudge it by 1, click empty space to add one, and double-click (or press Delete) to remove it.</li>
-      <li><b>Stat tables:</b> open the Stat tables tab, pick z, t, χ² or F next to the heading, then type a value to highlight its cell.</li>
+      <li><b>Statistical Tables:</b> open the Statistical Tables tab, pick z, t, χ² or F next to the heading, then type a value to highlight its cell.</li>
       <li><b>Normal curve:</b> set μ and σ, pick an area type, then drag the round points on the axis or type a and b.</li>
       <li><b>🌙 button (top right):</b> switches between light and dark mode.</li>
-      <li><b>⋮ menu (top right):</b> sharing, this help and About.</li>
-    </ul>
-    <p class="bn">সংখ্যা লিখে, ডট টেনে আর টেবিলে মান খুঁজে নিজে নিজে পরিসংখ্যান শিখুন।</p>`],
+    </ul>`],
   about: ['About ABC Stat Lab', `
-    <p>ABC Stat Lab is a free, hands-on place to learn and practise statistics: a descriptive statistics calculator with step-by-step working, an interactive playground, the normal curve, and z, t, χ² and F tables.</p>
+    <p>ABC Stat Lab is a free, hands-on place to learn and practise statistics: an interactive playground, the normal curve, and z, t, χ² and F tables.</p>
     <p>Everything is calculated in your browser. The numbers you type are never sent anywhere or stored on a server. Table values are computed with standard numerical methods and are accurate to every digit shown.</p>
-    <p>Videos belong to their creators and open on their own sites.</p>
-    <p>Developed by <b>Md. Fakhrul Hasan</b>, Assistant Professor, Bangladesh Agricultural University (BAU).</p>
-    <p>This is a personal teaching project, not an official website of BAU or any other institution.</p>
-    <p class="bn">পরিসংখ্যানের হাতেখড়ি, হাতে-কলমে।</p>`]
+    <p>This is a personal teaching project, not an official website of BAU or any other institution.</p>`]
 };
 let lastFocus = null;
 function openModal(key) {
@@ -3015,7 +1811,8 @@ menu.addEventListener('click', async e => {
   const it = e.target.closest('[data-menu]');
   if (!it) return;
   const k = it.dataset.menu;
-  if (k === 'facebook' || k === 'whatsapp') { closeMenu(false); return; }
+  if (k === 'whatsapp') { closeMenu(false); return; }
+  if (k === 'view') { closeMenu(false); if (location.hash === '#' + it.dataset.view) { e.preventDefault(); showView(it.dataset.view); } return; }
   closeMenu(false);
   if (k === 'copy') {
     try { await navigator.clipboard.writeText(siteUrl()); toast('Link copied'); }
@@ -3027,19 +1824,17 @@ menu.addEventListener('click', async e => {
 
 /* ================= Init ================= */
 pgLoad(PRESETS.default, 'default');
-renderPicker();
-calcRun();
 neUpdate();
 buildZ(); buildT(); buildC(); buildMinis();
 zLookup(false); tLookup(false); cLookup(false); fLookup(false);
 cellHover($('#zTable')); cellHover($('#tTable')); cellHover($('#cTable')); cellHover($('#fTable'));
 
 let rT;
-const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { pgRender(); if (calcLast) calcChart(calcLast); neRender(); if (!$('#tests').hidden) htRun(); if (!$('#regression').hidden) rgPlot(); }, 60); };
-if ('ResizeObserver' in window) { const ro = new ResizeObserver(onResize); [pgWrap, $('#calcChart'), neWrap, $('#htPlotWrap'), $('#rgWrap')].forEach(n => ro.observe(n)); }
+const onResize = () => { clearTimeout(rT); rT = setTimeout(() => { pgRender(); neRender(); }, 60); };
+if ('ResizeObserver' in window) { const ro = new ResizeObserver(onResize); [pgWrap, neWrap].forEach(n => ro.observe(n)); }
 else window.addEventListener('resize', onResize);
 showView(location.hash.slice(1));
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { pgRender(); neRender(); if (calcLast) calcChart(calcLast); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { pgRender(); neRender(); });
 })();
 </script>
 </body>
