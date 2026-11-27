@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script>try{var t=localStorage.getItem('abcstatlab-theme');if(!t&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)t='dark';if(t==='dark')document.documentElement.setAttribute('data-theme','dark')}catch(e){}</script>
-<title>ABC Stat Lab</title>
+<title>Stat Tables</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital@0;1&display=swap" rel="stylesheet">
@@ -426,6 +426,22 @@ table.st{border-collapse:separate;border-spacing:0;font-family:var(--font-mono);
 .st td.hit{background:var(--accent);color:var(--on-accent);font-weight:600}
 .st tbody tr:hover th{color:var(--accent)}
 
+/* video channels */
+.chan-group + .chan-group{margin-top:26px}
+.chan-group h3{display:flex;align-items:center;gap:9px;margin:0 0 4px;font-size:1.12rem}
+.chan-group h3 i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.chan-group > p{margin:0 0 12px;color:var(--muted);font-size:14.5px}
+.chans{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.chan{display:flex;gap:13px;align-items:flex-start;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);text-decoration:none;color:var(--ink);transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.chan:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 12px 26px -18px rgba(15,25,50,.45)}
+.chan .logo{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:#fff;font-family:var(--font-display);font-weight:700;font-size:17px}
+.chan .nm{font-weight:600;font-size:15.5px;line-height:1.25}
+.chan .for{font-size:13.5px;color:var(--muted);margin:3px 0 7px;line-height:1.4}
+.chan-group h3 .gi svg{display:block;width:22px;height:22px}
+.chan .go{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:#d40000}
+:root[data-theme="dark"] .chan .go{color:#ff6b6b}
+.chan .go .yt{flex:none}
+.chan.mine{border-color:color-mix(in srgb,var(--mean) 45%,var(--line));background:linear-gradient(135deg,color-mix(in srgb,var(--mean) 7%,var(--surface)),var(--surface))}
 /* videos */
 .vid-group + .vid-group{margin-top:22px}
 .vid-group h3{margin-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -481,9 +497,9 @@ footer p{margin:4px 0;max-width:90ch}
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="#tables" aria-label="ABC Stat Lab home (Statistical Tables)" title="Home: Statistical Tables">
+  <a class="brand" href="#tables" aria-label="Stat Tables home (Statistical Tables)" title="Home: Statistical Tables">
     <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="1" width="24" height="24" rx="6" fill="var(--ink)"/><circle cx="8" cy="16" r="2.4" fill="var(--surface)"/><circle cx="13" cy="16" r="2.4" fill="var(--surface)"/><circle cx="13" cy="10.6" r="2.4" fill="var(--surface)"/><circle cx="18.5" cy="16" r="2.4" fill="var(--surface)"/><path d="M13 19.5 l-3 3.5 h6z" fill="var(--mean)"/></svg>
-    ABC Stat Lab
+    Stat Tables
   </a>
   <span class="crumb tagline">Hope you’ll love statistics</span>
   <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-label="Switch to dark mode" title="Dark mode">
@@ -521,7 +537,8 @@ footer p{margin:4px 0;max-width:90ch}
     </div>
   </div>
   <nav class="main-tabs" aria-label="Tools">
-    <a href="#tables" data-view="tables" id="tablesTab"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9.5h18M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.6"/></svg><span class="lg">Statistical Tables</span><span class="sh">Statistical Tables</span></a>
+    <a href="#tables" data-view="tables" id="tablesTab"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 9.5h18M9 4v16M15 4v16" stroke="currentColor" stroke-width="1.6"/></svg><span class="lg">Tables</span><span class="sh">Tables</span></a>
+    <a href="#videos" data-view="videos"><svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/></svg><span class="lg">Videos</span><span class="sh">Videos</span></a>
   </nav>
 </header>
 
@@ -727,6 +744,17 @@ footer p{margin:4px 0;max-width:90ch}
         <div class="ttable-wrap" id="fWrap"><table class="st" id="fTable"></table></div>
       </div>
     </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section id="videos" class="wrap section view" aria-labelledby="vd-h">
+    <div class="section-head">
+      <div>
+        <h2 id="vd-h"><span style="display:inline-flex;align-items:center;gap:12px"><svg width="40" height="28" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#ff0000"/><path d="M11 5.5v9l7.8-4.5z" fill="#fff"/></svg>Learn on YouTube</span></h2>
+        <p>Hand-picked YouTube channels. Learn the calculator steps with Sorry Math, and understand the ideas behind them with the concept channels.</p>
+      </div>
+    </div>
+    <div id="chanGroups"></div>
   </section>
 
   <!-- CONCEPTS -->
@@ -1712,8 +1740,28 @@ $('#conceptGrid').addEventListener('click', e => {
 });
 
 
+/* ================= Videos =================
+   To add a channel: copy one line inside "items" and change the name, link and text. */
+const CALC_ICON = '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="2.5" width="14" height="19" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="5.5" width="8" height="3.5" rx="1" fill="currentColor"/><g fill="currentColor"><circle cx="9" cy="12.5" r="1.1"/><circle cx="12" cy="12.5" r="1.1"/><circle cx="15" cy="12.5" r="1.1"/><circle cx="9" cy="15.5" r="1.1"/><circle cx="12" cy="15.5" r="1.1"/><circle cx="15" cy="15.5" r="1.1"/><circle cx="9" cy="18.5" r="1.1"/><circle cx="12" cy="18.5" r="1.1"/><circle cx="15" cy="18.5" r="1.1"/></g></svg>';
+const CHANNELS = [
+  { title: 'Solve it on your calculator', icon: CALC_ICON, color: 'var(--mean)', note: 'Step-by-step calculator hacks for Casio scientific calculators.',
+    items: [
+      { name: 'Sorry Math', logo: CALC_ICON, bg: '#f5a300', url: 'https://www.youtube.com/@sorrymathbd', mine: true, for: 'Casio fx-991ES Plus, fx-991EX and fx-100MS: mean, SD, correlation, regression, t tests, and how to read critical values from the tables.' }
+    ] },
+  { title: 'Understand the concept', color: 'var(--median)', note: 'Clear explanations of the ideas behind statistics.',
+    items: [
+      { name: 'Khan Academy', logo: 'KA', bg: '#14bf96', url: 'https://www.youtube.com/@khanacademy', for: 'Statistics and probability from the basics, one small step at a time.' },
+      { name: 'StatQuest with Josh Starmer', logo: 'SQ', bg: '#2c56e0', url: 'https://www.youtube.com/@statquest', for: 'Statistics and machine learning ideas, explained with pictures.' },
+      { name: 'jbstatistics', logo: 'jb', bg: '#6a3dcf', url: 'https://www.youtube.com/@jbstatistics', for: 'Short, exact videos on distributions, tests and intervals.' },
+      { name: 'CrashCourse', logo: 'CC', bg: '#e0532c', url: 'https://www.youtube.com/@crashcourse', for: 'The Crash Course Statistics series: the big picture, fast.' }
+    ] }
+];
+$('#chanGroups').innerHTML = CHANNELS.map(g => `<div class="chan-group"><h3>${g.icon ? `<span class="gi" style="color:${g.color}">${g.icon}</span>` : `<i style="background:${g.color}"></i>`}${g.title}</h3><p>${g.note}</p><div class="chans">${
+  g.items.map(c => `<a class="chan${c.mine ? ' mine' : ''}" href="${c.url}" target="_blank" rel="noopener noreferrer"><span class="logo" style="background:${c.bg}">${c.logo}</span><span><span class="nm">${c.name}</span><p class="for">${c.for}</p><span class="go"><svg class="yt" width="20" height="14" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#ff0000"/><path d="M11 5.5v9l7.8-4.5z" fill="#fff"/></svg>Watch on YouTube →</span></span></a>`).join('')
+}</div></div>`).join('');
+
 /* ================= Views ================= */
-const VIEWS = { playground: 'Playground', normal: 'Normal curve', tables: 'Statistical Tables', concepts: 'Concepts' };
+const VIEWS = { playground: 'Playground', normal: 'Normal curve', tables: 'Statistical Tables', videos: 'Videos', concepts: 'Concepts' };
 function showView(id) {
   if (!VIEWS[id]) id = 'tables';
   Object.keys(VIEWS).forEach(v => { document.getElementById(v).hidden = v !== id; });
@@ -1765,7 +1813,7 @@ const menuBtn = $('#menuBtn'), menu = $('#siteMenu');
 const siteUrl = () => (location.protocol.startsWith('http') ? location.origin + location.pathname : location.href.split('#')[0]);
 function openMenu() {
   const u = encodeURIComponent(siteUrl());
-  menu.querySelector('[data-menu="whatsapp"]').href = 'https://wa.me/?text=' + encodeURIComponent('ABC Stat Lab: interactive statistics ' + siteUrl());
+  menu.querySelector('[data-menu="whatsapp"]').href = 'https://wa.me/?text=' + encodeURIComponent('Stat Tables: interactive statistics ' + siteUrl());
   menu.hidden = false; menuBtn.setAttribute('aria-expanded', 'true');
   const first = menu.querySelector('.menu-item'); if (first) first.focus();
 }
@@ -1781,18 +1829,18 @@ menu.addEventListener('keydown', e => {
 let toastT;
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
 const MODALS = {
-  help: ['How to use ABC Stat Lab', `
+  help: ['How to use Stat Tables', `
     <ul>
       <li><b>Tab under the title:</b> Statistical Tables (the home page).</li>
-      <li><b>☰ menu (top right):</b> learning pages (Concepts, Playground, Normal curve) and sharing. Click the ABC Stat Lab logo to come back to the Statistical Tables.</li>
+      <li><b>☰ menu (top right):</b> learning pages (Concepts, Playground, Normal curve) and sharing. Click the Stat Tables logo to come back to the Statistical Tables.</li>
       <li><b>Concepts:</b> each card's button opens the idea in the matching tool.</li>
       <li><b>Playground:</b> drag a dot, scroll over it to nudge it by 1, click empty space to add one, and double-click (or press Delete) to remove it.</li>
       <li><b>Statistical Tables:</b> open the Statistical Tables tab, pick z, t, χ² or F next to the heading, then type a value to highlight its cell.</li>
       <li><b>Normal curve:</b> set μ and σ, pick an area type, then drag the round points on the axis or type a and b.</li>
       <li><b>🌙 button (top right):</b> switches between light and dark mode.</li>
     </ul>`],
-  about: ['About ABC Stat Lab', `
-    <p>ABC Stat Lab is a free, hands-on place to learn and practise statistics: an interactive playground, the normal curve, and z, t, χ² and F tables.</p>
+  about: ['About Stat Tables', `
+    <p>Stat Tables is a free, hands-on place to learn and practise statistics: an interactive playground, the normal curve, and z, t, χ² and F tables.</p>
     <p>Everything is calculated in your browser. The numbers you type are never sent anywhere or stored on a server. Table values are computed with standard numerical methods and are accurate to every digit shown.</p>
     <p>This is a personal teaching project, not an official website of BAU or any other institution.</p>`]
 };
