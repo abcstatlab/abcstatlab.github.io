@@ -427,6 +427,8 @@ table.st{border-collapse:separate;border-spacing:0;font-family:var(--font-mono);
 .st tbody tr:hover th{color:var(--accent)}
 
 /* video channels */
+.vid-intro{margin:0 0 22px;padding-left:20px;color:var(--muted);font-size:15.5px;line-height:1.6}
+.vid-intro b{color:var(--ink);font-weight:600}
 .chan-group + .chan-group{margin-top:26px}
 .chan-group h3{display:flex;align-items:center;gap:9px;margin:0 0 4px;font-size:1.12rem}
 .chan-group h3 i{width:12px;height:12px;border-radius:3px;display:inline-block}
@@ -746,13 +748,11 @@ footer p{margin:4px 0;max-width:90ch}
   </section>
 
   <!-- VIDEOS -->
-  <section id="videos" class="wrap section view" aria-labelledby="vd-h">
-    <div class="section-head">
-      <div>
-        <h2 id="vd-h"><span style="display:inline-flex;align-items:center;gap:12px"><svg width="40" height="28" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="5" fill="#ff0000"/><path d="M11 5.5v9l7.8-4.5z" fill="#fff"/></svg>Learn on YouTube</span></h2>
-        <p>Hand-picked YouTube channels. Learn the calculator steps with Sorry Math, and understand the ideas behind them with the concept channels.</p>
-      </div>
-    </div>
+  <section id="videos" class="wrap section view" aria-label="Videos">
+    <ul class="vid-intro">
+      <li><b>For calculator steps:</b> Sorry Math shows how to do each calculation on Casio scientific calculators.</li>
+      <li><b>For concepts:</b> Khan Academy, StatQuest, jbstatistics and CrashCourse explain the ideas behind them.</li>
+    </ul>
     <div id="chanGroups"></div>
   </section>
 
